@@ -2,7 +2,7 @@
 #include <string.h>
 #include <unistd.h>
 
-int main() 
+int main() {
     while (x=1) {
         char cwd[1024];
         getcwd(cwd, sizeof(cwd));
