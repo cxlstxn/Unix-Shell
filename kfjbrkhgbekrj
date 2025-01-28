@@ -1,0 +1,19 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "list.h"
+
+
+int main(){
+  char str[100];
+  int n  = 1;
+  while(n != 0){
+    printf("input stuff: ");
+    fgets(str, sizeof(str), stdin);
+    char* token = strtok(str, " < \t | > & ;");
+    while(token != NULL){
+      printf(" %s\n", token);
+      token = strtok(NULL, " < \t | > & ;");
+    }
+  }
+}
