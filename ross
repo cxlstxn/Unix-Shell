@@ -1,0 +1,17 @@
+#include<stdio.h>
+
+int main()
+{
+
+   char c;
+   int flag=0;
+
+    printf("- ");
+
+while (flag != EOF) {
+    flag = scanf(" %c", &c);
+    printf("- ");
+
+}
+return 0;
+}
