@@ -6,8 +6,7 @@
 #include <sys/wait.h>
 
 int main() {
-    int x = 1; 
-    while (x == 1) {
+    while (1) {
         char cwd[1024];
         getcwd(cwd, sizeof(cwd)); // gets working directory 
         printf("%s>$", cwd); // command line 
@@ -22,7 +21,7 @@ int main() {
             break;
         }
 		// exit check 
-        if (strcmp(userinput, "exit\n") == 0) { exit -> exit program 
+        if (strcmp(userinput, "exit\n") == 0) { // exit -> exit program 
             break;
         }
 
@@ -38,9 +37,9 @@ int main() {
             token = strtok(NULL, " < \t | > & ;");
         }
         
-		/*
+		/* Stage 1 Testing
         for (int i = 0; i < token_count; i++) {
-            printf("'%s'\n", tokens[i]); // loop through tokens printing them
+            printf("'%s'\n", tokens[i]); // loop through tokens printing them 
         }
 		*/
 		
