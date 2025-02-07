@@ -2,7 +2,8 @@
 ## Authors: Fraser Watt, Alex Boyd, Ross Paton, Jacob Mwangu, Finlay Colston
 
 ### To-do:
-- Implement stage 2
+- Implement Stage 3
+- Clean up code
 
 
 ```

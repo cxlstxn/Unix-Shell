@@ -42,10 +42,10 @@ int main() {
       printf("\n");
       break;
     }
-
     
     // exit check 
-    if (strcmp(userinput, "exit\n") == 0) { //exit -> exit program 
+    if (tokenList[0] != NULL && (strcmp(tokenList[0], "exit") == 0)) { //exit -> exit program
+      // tokenList[0] contains the first argument - in this case 'exit' - check if that is not NULL and is 'exit'
       break;
     }
     
@@ -60,7 +60,10 @@ int main() {
     }
     else if(pid==0){ // signifies child process
       execvp(tokenList[0],tokenList); // passes user input[0] (function) and rest of string as arguement
-      fprintf(stderr, "Error executing command!\n"); // shouldn't ever reach this part - reach it when command invlaid - WHY?
+      /*
+	Only reach this section if the command cannot be located, tokenList[0] == NULL, or cannot execute program - not our fault
+       */
+      fprintf(stderr, "Command not found!\n"); 
       return 1;
     }
     else{
