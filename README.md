@@ -1,10 +1,19 @@
 # CS210 - Computer Systems and Architecture - Simple Shell Practical 
 ## Authors: Fraser Watt, Alex Boyd, Ross Paton, Jacob Mwangu, Finlay Colston
 
-### To-do:
-- Implement Stage 3
-- Clean up code
 
+## Stage Summary:
+
+### Stage 1:
+- Print shell like prompt - including the user's current working directory
+- Be able to accept and tokenise user input
+- Be able to exit shell using both 'exit' and CRTL+D respectively
+
+### Stage 2:
+- Search through current internal commands ('exit' & CTRL+D) and execute them if appropriate
+- If external command:
+  - Fork process and create a child process
+  - Search through the user PATH and find if there is a corresponding command - if so execute said command - otherwise, print error message informing the user of invalid input
 
 ```
 Find the user home directory from the environment
@@ -24,3 +33,8 @@ Save aliases
 Restore original path
 Exit
 ```
+
+
+### To-do:
+- Implement Stage 3
+- Clean up code
