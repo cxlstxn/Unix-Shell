@@ -6,6 +6,9 @@
 #include <sys/wait.h>
 
 int main() {
+  /* SAVE THE CURRENT PATH */
+  char* originalEnvPath = getevn();
+  
   /* DO WHILE SHELL HAS NOT TERMINATED: */
   int x = 1; 
   while (x == 1) {
