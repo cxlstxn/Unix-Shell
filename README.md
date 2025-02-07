@@ -12,12 +12,11 @@ Save the current path
 Load history
 Load aliases
 Do while shell has not terminated
-Display prompt
-Read and parse user input
-While the command is a history invocation or alias then replace it with the
-appropriate command from history or the aliased command respectively
-If command is built-in invoke appropriate function
-Else execute command as an external process
+   Display prompt
+   Read and parse user input
+   While the command is a history invocation or alias then replace it with the appropriate command from history or the aliased command respectively  
+   If command is built-in invoke appropriate function
+   Else execute command as an external process
 End while
 Save history
 Save aliases
