@@ -1,17 +1,17 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
-#include <unistd.h>
 #include <sys/wait.h>
 
 int main() {
-  /* SAVE THE CURRENT PATH */
-  char* originalEnvPath = getevn();
-  
-  /* DO WHILE SHELL HAS NOT TERMINATED: */
-  int x = 1; 
-  while (x == 1) {
+    char* originalEnvPath = getenv("PATH"); // gets the original path
+    chdir(getenv("HOME")); // changes directory to home path
+
+    /* DO WHILE SHELL HAS NOT TERMINATED: */
+
+  while (1) {
     char cwd[1024];
     getcwd(cwd, sizeof(cwd)); // gets working directory
 
@@ -30,7 +30,7 @@ int main() {
     while (token != NULL) {
       char *newline = strchr(token, '\n');
       if (newline) {
-	*newline = '\0'; // setting NULL position
+	      *newline = '\0'; // setting NULL position
       }
       tokenList[token_count++] = token;
       token = strtok(NULL, " < \t | > & ;");
@@ -40,42 +40,36 @@ int main() {
 
     /* IF COMMAND IS BUILT-IN INVOKE APPROPRIATE FUNCTIONS: */
 
-  // Ctrl+d check
     if (feof(stdin)) { // ctrl+d -> exit program
       printf("\n");
+      setenv("PATH", originalEnvPath, 1); // reset path
       break;
-    }
-    
-    // exit check 
-    if (tokenList[0] != NULL && (strcmp(tokenList[0], "exit") == 0)) { //exit -> exit program
+    } else if (strcmp(tokenList[0], "exit") == 0) { //exit -> exit program 
       // tokenList[0] contains the first argument - in this case 'exit' - check if that is not NULL and is 'exit'
+      setenv("PATH", originalEnvPath, 1); // reset path
       break;
-    }
-    
-    /* ELSE EXECUTE COMMAND AS AN EXTERNAL PROCESS: */
+    } else if (strcmp(tokenList[0], "getpath") ==  0) { // getpath -> print path
+        printf("%s\n", getenv("PATH")); 
+    } else if (strcmp(tokenList[0], "setpath") == 0 ) { // setpath -> set path to first args
+        setenv("PATH", tokenList[1], 1);
+    } else {
+        pid_t pid;
+        pid = fork();
 
-    pid_t pid;
-    pid = fork();
-
-    if(pid<0){ // negative pid -> failure
-      fprintf(stderr, "Fork failed\n"); // Fork failed
-      return 1;
+        if (pid < 0) { // negative pid -> failure
+            fprintf(stderr, "Fork failed\n"); // Fork failed
+            return 1;
+        } else if (pid == 0) { // signifies child process
+            execvp(tokenList[0], tokenList); // passes user input[0] (function) and rest of string as argument
+            /*
+            Only reach this section if the command cannot be located, tokenList[0] == NULL, or cannot execute program - not our fault
+            */
+            fprintf(stderr, "Command not found!\n");
+            return 1;
+        } else {
+            wait(NULL); // Parent waiting for child process to complete
+        }
     }
-    else if(pid==0){ // signifies child process
-      execvp(tokenList[0],tokenList); // passes user input[0] (function) and rest of string as arguement
-      /*
-	Only reach this section if the command cannot be located, tokenList[0] == NULL, or cannot execute program - not our fault
-       */
-      fprintf(stderr, "Command not found!\n"); 
-      return 1;
-    }
-    else{
-      wait(NULL); // Parent waiting for child process to complete
-   }
-    
   }
 
-
-
-  
 }
