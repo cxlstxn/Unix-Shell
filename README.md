@@ -15,6 +15,15 @@
   - Fork process and create a child process
   - Search through the user PATH and find if there is a corresponding command - if so execute said command - otherwise, print error message informing the user of invalid input
 
+### Stage 3:
+- Store the original user path
+- Restore original user path upon exiting the program
+- Change user environment to user/home when shell starts up
+- Add getpath and setpath as internal commands:
+  - ```getpath``` - Displays the current user path
+  - ```setpath``` - Sets the environment path to valid user input
+
+
 ```
 Find the user home directory from the environment
 Set current working directory to user home directory
@@ -36,5 +45,6 @@ Exit
 
 
 ### To-do:
-- Implement Stage 3
+- **Thoroughly** test Stage 3
 - Clean up code
+- Begin working on Stage 4
