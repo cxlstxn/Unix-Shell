@@ -1,16 +1,19 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
-#include <unistd.h>
 #include <sys/wait.h>
 
 int main() {
+
   /* SAVE THE CURRENT PATH */
-  //  char* originalEnvPath = getevn();
-  
+  char* originalEnvPath = getenv("PATH"); // fetches and stores the original path to restore later
+  printf("OG = %s\n", getenv("PATH")); // FOR TESTING
+  chdir(getenv("HOME")); // changes directory to user's home path - shell running in user's HOME - good starting point
+
   /* DO WHILE SHELL HAS NOT TERMINATED: */
-  int x = 1; 
-  while (x == 1) {
+
+  while (1) {
     char cwd[1024];
     getcwd(cwd, sizeof(cwd)); // gets working directory
 
@@ -29,7 +32,7 @@ int main() {
     while (token != NULL) {
       char *newline = strchr(token, '\n');
       if (newline) {
-	*newline = '\0'; // setting NULL position
+	      *newline = '\0'; // setting NULL position
       }
       tokenList[token_count++] = token;
       token = strtok(NULL, " < \t | > & ;");
@@ -39,42 +42,58 @@ int main() {
 
     /* IF COMMAND IS BUILT-IN INVOKE APPROPRIATE FUNCTIONS: */
 
-  // Ctrl+d check
     if (feof(stdin)) { // ctrl+d -> exit program
       printf("\n");
+      setenv("PATH", originalEnvPath, 1); // reset path to original - no changes persist
+      printf("OG = %s\n", originalEnvPath); // FOR TESTING
       break;
     }
-    
-    // exit check 
-    if (tokenList[0] != NULL && (strcmp(tokenList[0], "exit") == 0)) { //exit -> exit program
-      // tokenList[0] contains the first argument - in this case 'exit' - check if that is not NULL and is 'exit'
+    else if (strcmp(tokenList[0], "exit") == 0) { //exit -> exit program 
+      // tokenList[0] contains the first argument - 'exit'
+      setenv("PATH", originalEnvPath, 1); // reset path
+      printf("OG = %s\n", getenv("PATH")); // FOR TESTING
       break;
     }
-    
-    /* ELSE EXECUTE COMMAND AS AN EXTERNAL PROCESS: */
-
-    pid_t pid;
-    pid = fork();
-
-    if(pid<0){ // negative pid -> failure
-      fprintf(stderr, "Fork failed\n"); // Fork failed
-      return 1;
+    // getpath function:
+    else if (strcmp(tokenList[0], "getpath") ==  0) { // getpath -> print path
+      if(tokenList[1] != NULL){
+	printf("Error: Too many arguments. Usage getpath\n");
+      }else{
+        printf("%s\n", getenv("PATH"));
+      }
     }
-    else if(pid==0){ // signifies child process
-      execvp(tokenList[0],tokenList); // passes user input[0] (function) and rest of string as arguement
-      /*
-	Only reach this section if the command cannot be located, tokenList[0] == NULL, or cannot execute program - not our fault
-       */
-      fprintf(stderr, "Command not found!\n"); 
-      return 1;
+    // setpath function: 
+    else if (strcmp(tokenList[0], "setpath") == 0){ // setpath -> set path to first args
+      if(tokenList[1] == NULL){
+	printf("Error: Missing argument. Usage: setpath <directory>\n");
+      }
+      else if(tokenList[2] != NULL){
+	printf("Error: Too many arguments. Usage setpath <directory>\n");
+      }
+      else{
+        setenv("PATH", tokenList[1], 1);
+      }
     }
-    else{
-      wait(NULL); // Parent waiting for child process to complete
-   }
-    
+    else {
+      /* ELSE EXECUTE COMMAND AS AN EXTERNAL PROCESS: */
+        pid_t pid;
+        pid = fork();
+
+        if (pid < 0) { // negative pid -> failure
+            fprintf(stderr, "Fork failed\n"); // Fork failed
+            return 1;
+        } else if (pid == 0) { // signifies child process
+            execvp(tokenList[0], tokenList); // passes user input[0] (function) and rest of string as argument
+            /*
+            Only reach this section if the command cannot be located, tokenList[0] == NULL, or cannot execute program - not our fault
+            */
+            fprintf(stderr, "Command not found!\n");
+            return 1;
+        } else {
+            wait(NULL); // Parent waiting for child process to complete
+        }
+    }
   }
-
-
 
   
 }
