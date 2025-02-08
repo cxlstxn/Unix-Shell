@@ -1,13 +1,12 @@
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <sys/wait.h>
 
 int main() {
   /* SAVE THE CURRENT PATH */
-  char* originalEnvPath = getevn();
+  //  char* originalEnvPath = getevn();
   
   /* DO WHILE SHELL HAS NOT TERMINATED: */
   int x = 1; 
