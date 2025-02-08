@@ -6,8 +6,11 @@
 #include <sys/wait.h>
 
 int main() {
-    char* originalEnvPath = getenv("PATH"); // gets the original path
-    chdir(getenv("HOME")); // changes directory to home path
+
+  /* SAVE THE CURRENT PATH */
+  char* originalEnvPath = getenv("PATH"); // fetches and stores the original path to restore later
+  printf("OG = %s\n", getenv("PATH")); // FOR TESTING
+  chdir(getenv("HOME")); // changes directory to user's home path - shell running in user's HOME - good starting point
 
     /* DO WHILE SHELL HAS NOT TERMINATED: */
 
@@ -42,17 +45,38 @@ int main() {
 
     if (feof(stdin)) { // ctrl+d -> exit program
       printf("\n");
-      setenv("PATH", originalEnvPath, 1); // reset path
+      setenv("PATH", originalEnvPath, 1); // reset path to original - no changes persist
+      printf("OG = %s\n", originalEnvPath); // FOR TESTING
       break;
-    } else if (strcmp(tokenList[0], "exit") == 0) { //exit -> exit program 
-      // tokenList[0] contains the first argument - in this case 'exit' - check if that is not NULL and is 'exit'
+    }
+    else if (strcmp(tokenList[0], "exit") == 0) { //exit -> exit program 
+      // tokenList[0] contains the first argument - 'exit'
       setenv("PATH", originalEnvPath, 1); // reset path
+      printf("OG = %s\n", getenv("PATH")); // FOR TESTING
       break;
-    } else if (strcmp(tokenList[0], "getpath") ==  0) { // getpath -> print path
-        printf("%s\n", getenv("PATH")); 
-    } else if (strcmp(tokenList[0], "setpath") == 0 ) { // setpath -> set path to first args
+    }
+    // getpath function:
+    else if (strcmp(tokenList[0], "getpath") ==  0) { // getpath -> print path
+      if(tokenList[1] != NULL){
+	printf("Error: Too many arguments. Usage getpath\n");
+      }else{
+        printf("%s\n", getenv("PATH"));
+      }
+    }
+    // setpath function: 
+    else if (strcmp(tokenList[0], "setpath") == 0){ // setpath -> set path to first args
+      if(tokenList[1] == NULL){
+	printf("Error: Missing argument. Usage: setpath <directory>\n");
+      }
+      else if(tokenList[2] != NULL){
+	printf("Error: Too many arguments. Usage setpath <directory>\n");
+      }
+      else{
         setenv("PATH", tokenList[1], 1);
-    } else {
+      }
+    }
+    else {
+      /* ELSE EXECUTE COMMAND AS AN EXTERNAL PROCESS: */
         pid_t pid;
         pid = fork();
 
