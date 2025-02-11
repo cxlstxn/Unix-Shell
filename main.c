@@ -5,25 +5,26 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-// newline should be valid 
 int main() {
 
   /* SAVE THE CURRENT PATH */
   char* originalEnvPath = getenv("PATH"); // fetches and stores the original path to restore later
-  printf("OG = %s\n", getenv("PATH")); // !! FOR TESTING ONLY !!
   chdir(getenv("HOME")); // changes directory to user's home path - shell running in user's HOME - good starting point
 
   /* DO WHILE SHELL HAS NOT TERMINATED: */
 
   while (1) {
-    char cwd[1024];
-    getcwd(cwd, sizeof(cwd)); // gets working directory
+
+    // MAKE THIS FAILSAFE? ADD CONDITION FOR NULL IF FAILS:
+    char cwd[1024]; // Creates buffer 
+    getcwd(cwd, sizeof(cwd)); // gets working directory and saves it to cwd
 
 
     /* DISPLAY PROMPT: */
-    printf("%s>$ ", cwd); // command line 
-    char userinput[100];
+    printf("%s>$ ", cwd); // command line
+    fflush(stdout); // prompt appears immediately
 
+    char userinput[100];
 
     /* READ AND PARSE USER INPUT: */
     fgets(userinput, sizeof(userinput), stdin); // getting user input
@@ -32,7 +33,7 @@ int main() {
     int token_count = 0;
     char* token = strtok(userinput, " < \t | > & ;"); // tokens to look for
     while (token != NULL) {
-      char *newline = strchr(token, '\n');
+      char *newline = strchr(token, '\n'); // searching for '\n'
       if (newline) {
 	      *newline = '\0'; // setting NULL position
       }
@@ -43,24 +44,26 @@ int main() {
 
 
     /* IF COMMAND IS BUILT-IN INVOKE APPROPRIATE FUNCTIONS: */
-
+    // BELOW NOT WORKING:
+    /*
+    if(tokenList[0] == NULL){
+      break; // nothing entered, print prompt again
+    }
+    */
     if (feof(stdin)) { // ctrl+d -> exit program
       printf("\n");
       setenv("PATH", originalEnvPath, 1); // reset path to original - no changes persist
-      printf("OG = %s\n", originalEnvPath); // !! FOR TESTING ONLY !!
       break;
     }
-    else if (strcmp(tokenList[0], "exit") == 0) { //exit -> exit program 
+    else if (strcmp(tokenList[0], "exit") == 0) { //exit -> exit program
+      if(tokenList[1] == NULL){
       // tokenList[0] contains the first argument - 'exit'
       setenv("PATH", originalEnvPath, 1); // reset path
-      // printf("OG = %s\n", getenv("PATH")); // FOR TESTING
       break;
-    } // NOT WORKING: ATTEMPTING TO HAVE VALID CODE WHEN NEWLINE ENTERED 
-    //else if(strcmp(tokenList[0], "\n") == 0){
-    else if (getc(stdin)){
-      printf("%s>$ ", cwd); // command line
-    }
-    // getpath function:
+    }else{
+	printf("Error: Too many arguments. Usage exit\n");
+      }
+    } // getpath function:
     else if (strcmp(tokenList[0], "getpath") ==  0) { // getpath -> print path
       if(tokenList[1] != NULL){
 	printf("Error: Too many arguments. Usage getpath\n");
@@ -81,12 +84,12 @@ int main() {
       }
     }
     // cd Command:
-    else if (strcmp(tokenList[0], "cd") == 0 && tokenList[1] == NULL) {
+    else if (strcmp(tokenList[0], "cd") == 0) {
+      if(tokenList[1] == NULL){
       // type 1 - no args -> put user in home directory:
       chdir(getenv("HOME"));
-      
-    }
-    else{
+      }
+      else{
       /* ELSE EXECUTE COMMAND AS AN EXTERNAL PROCESS: */
         pid_t pid;
         pid = fork();
