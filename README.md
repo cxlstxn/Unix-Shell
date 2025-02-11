@@ -48,3 +48,5 @@ Exit
 - Be able to accept no command gracefully, printing command line prompt again
 - Clean up code
 - Begin working on Stage 4
+- Finish cd command using correct args
+- Modularise code
