@@ -45,6 +45,6 @@ Exit
 
 
 ### To-do:
-- **Thoroughly** test Stage 3
+- Be able to accept no command gracefully, printing command line prompt again
 - Clean up code
 - Begin working on Stage 4
