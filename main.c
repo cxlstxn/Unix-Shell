@@ -5,11 +5,12 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+// newline should be valid 
 int main() {
 
   /* SAVE THE CURRENT PATH */
   char* originalEnvPath = getenv("PATH"); // fetches and stores the original path to restore later
-  printf("OG = %s\n", getenv("PATH")); // FOR TESTING
+  printf("OG = %s\n", getenv("PATH")); // !! FOR TESTING ONLY !!
   chdir(getenv("HOME")); // changes directory to user's home path - shell running in user's HOME - good starting point
 
   /* DO WHILE SHELL HAS NOT TERMINATED: */
@@ -46,14 +47,18 @@ int main() {
     if (feof(stdin)) { // ctrl+d -> exit program
       printf("\n");
       setenv("PATH", originalEnvPath, 1); // reset path to original - no changes persist
-      printf("OG = %s\n", originalEnvPath); // FOR TESTING
+      printf("OG = %s\n", originalEnvPath); // !! FOR TESTING ONLY !!
       break;
     }
     else if (strcmp(tokenList[0], "exit") == 0) { //exit -> exit program 
       // tokenList[0] contains the first argument - 'exit'
       setenv("PATH", originalEnvPath, 1); // reset path
-      printf("OG = %s\n", getenv("PATH")); // FOR TESTING
+      // printf("OG = %s\n", getenv("PATH")); // FOR TESTING
       break;
+    } // NOT WORKING: ATTEMPTING TO HAVE VALID CODE WHEN NEWLINE ENTERED 
+    //else if(strcmp(tokenList[0], "\n") == 0){
+    else if (getc(stdin)){
+      printf("%s>$ ", cwd); // command line
     }
     // getpath function:
     else if (strcmp(tokenList[0], "getpath") ==  0) { // getpath -> print path
@@ -75,7 +80,13 @@ int main() {
         setenv("PATH", tokenList[1], 1);
       }
     }
-    else {
+    // cd Command:
+    else if (strcmp(tokenList[0], "cd") == 0 && tokenList[1] == NULL) {
+      // type 1 - no args -> put user in home directory:
+      chdir(getenv("HOME"));
+      
+    }
+    else{
       /* ELSE EXECUTE COMMAND AS AN EXTERNAL PROCESS: */
         pid_t pid;
         pid = fork();
@@ -94,7 +105,12 @@ int main() {
             wait(NULL); // Parent waiting for child process to complete
         }
     }
-  }
+
+    
+  } // closes while()
 
   
-}
+} // closes main()
+
+// path name, mode -> vari -> acces() !!
+// stat() -> use to var path exists
