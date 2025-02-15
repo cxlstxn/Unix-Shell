@@ -82,15 +82,13 @@ int main() {
       else{
         setenv("PATH", tokenList[1], 1);
       }
-    }/*
+    }
     // cd Command:
     else if (strcmp(tokenList[0], "cd") == 0) {
       if(tokenList[1] == NULL){
-      // type 1 - no args -> put user in home directory:
+      // type 1 - no args -> put user in home directory: -- works
       chdir(getenv("HOME"));
-      }
-     */
-      else{
+      }else{
       /* ELSE EXECUTE COMMAND AS AN EXTERNAL PROCESS: */
         pid_t pid;
         pid = fork();
@@ -110,12 +108,12 @@ int main() {
         }
     }
 
-    
-  } // closes while()
 
-  
-} // closes main()
-// } - NEEDED IF YOU UNCOMMENT THE CD COMMAND!!!!
+      
+    } // closes while()
+
+  } // closes main()
+} //- NEEDED IF YOU UNCOMMENT THE CD COMMAND!!!!
 
 // path name, mode -> vari -> acces() !!
 // stat() -> use to var path exists
