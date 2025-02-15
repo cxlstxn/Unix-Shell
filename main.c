@@ -29,6 +29,11 @@ int main() {
     /* READ AND PARSE USER INPUT: */
     fgets(userinput, sizeof(userinput), stdin); // getting user input
 
+    // for printing the command prompt upon empty input
+    if(userinput[0] == '\n'){
+      continue;
+    }
+
     char* tokenList[100];
     int token_count = 0;
     char* token = strtok(userinput, " < \t | > & ;"); // tokens to look for
@@ -44,12 +49,7 @@ int main() {
 
 
     /* IF COMMAND IS BUILT-IN INVOKE APPROPRIATE FUNCTIONS: */
-    // BELOW NOT WORKING:
-    /*
-    if(tokenList[0] == NULL){
-      break; // nothing entered, print prompt again
-    }
-    */
+    
     if (feof(stdin)) { // ctrl+d -> exit program
       printf("\n");
       setenv("PATH", originalEnvPath, 1); // reset path to original - no changes persist
