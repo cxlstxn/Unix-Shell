@@ -82,13 +82,14 @@ int main() {
       else{
         setenv("PATH", tokenList[1], 1);
       }
-    }
+    }/*
     // cd Command:
     else if (strcmp(tokenList[0], "cd") == 0) {
       if(tokenList[1] == NULL){
       // type 1 - no args -> put user in home directory:
       chdir(getenv("HOME"));
       }
+     */
       else{
       /* ELSE EXECUTE COMMAND AS AN EXTERNAL PROCESS: */
         pid_t pid;
@@ -114,6 +115,7 @@ int main() {
 
   
 } // closes main()
+// } - NEEDED IF YOU UNCOMMENT THE CD COMMAND!!!!
 
 // path name, mode -> vari -> acces() !!
 // stat() -> use to var path exists
