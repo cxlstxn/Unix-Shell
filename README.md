@@ -23,6 +23,14 @@
   - ```getpath``` - Displays the current user path
   - ```setpath``` - Sets the environment path to valid user input
 
+### Stage 4:
+- Implement the ```cd``` comamnd - allows user to change current working directory
+- 3 types:
+  - no args - returns user to home folder
+  - ```..``` - sets directory to parent folder
+  - ```filepath``` - sets directory to requested filepath if valid 
+
+## Overview:
 
 ```
 Find the user home directory from the environment
@@ -45,8 +53,5 @@ Exit
 
 
 ### To-do:
-- Be able to accept no command gracefully, printing command line prompt again
-- Clean up code
-- Begin working on Stage 4
-- Finish cd command using correct args
-- Modularise code
+- Begin working on Stage 5
+- **Modularise code**
