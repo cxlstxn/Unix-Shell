@@ -53,8 +53,8 @@ Exit
 
 ## Running the Shell:
 - Use:
-```. build.txt``` to build shell.
-```./shell``` to run the shell. 
+- ```. build.txt``` to build shell.
+- ```./shell``` to run the shell. 
 
 
 
