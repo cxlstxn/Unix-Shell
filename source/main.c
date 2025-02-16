@@ -4,6 +4,8 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
+
+
 #include "commands.h"
 
 int main() {
@@ -66,10 +68,10 @@ int main() {
       // tokenList[0] contains the first argument - 'exit'
       setenv("PATH", originalEnvPath, 1); // reset path
       break;
-    } else{
-	      printf("Error: Too many arguments. Usage exit\n");
+    }else{
+	printf("Error: Too many arguments. Usage exit\n");
     }
-
+      
     } // getpath function:
     else if (strcmp(tokenList[0], "getpath") ==  0) { // getpath -> print path
       getpath();

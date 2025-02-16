@@ -1,18 +1,20 @@
-// shell.c
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+
+
 #include "commands.h"
 
-// getpath function: Prints the current PATH
+// getpath function: Prints the current PATH:
 void getpath() {
     char* path = getenv("PATH");
     printf("%s\n", path);
 }
 
+// setpath function: Sets new PATH:
 void setpath(char* tokenList[]) {
     if(tokenList[1] == NULL){
 	printf("Error: Missing argument. Usage: setpath <directory>\n");
@@ -25,6 +27,7 @@ void setpath(char* tokenList[]) {
       }
     }
 
+// cd function:
 void cd(char* tokenList[]) {
     if(tokenList[1] == NULL){
       // type 1 - no args -> put user in home directory:
@@ -40,6 +43,8 @@ void cd(char* tokenList[]) {
       }
     }
 
+
+// external commands:
 void externalcommand(char* tokenList[]) {
     /* ELSE EXECUTE COMMAND AS AN EXTERNAL PROCESS: */
         pid_t pid;

@@ -1,5 +1,5 @@
 // shell.h
-#ifndef COMMANDS_H
+#ifndef COMMANDS_H // avoids redefinition errors
 #define COMMANDS_H
 
 void getpath();
