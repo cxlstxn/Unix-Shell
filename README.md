@@ -51,11 +51,12 @@ Restore original path
 Exit
 ```
 
-". build.txt" to build shell.
-then ./shell to run. 
+## Running the Shell:
+- Use:
+```. build.txt``` to build shell.
+```./shell``` to run the shell. 
 
 
 
 ### To-do:
 - Begin working on Stage 5
-- **Modularise code**
