@@ -4,6 +4,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
+#include "commands.h"
 
 int main() {
 
@@ -51,74 +52,43 @@ int main() {
 
 
     /* IF COMMAND IS BUILT-IN INVOKE APPROPRIATE FUNCTIONS: */
-    
+
+
     if (feof(stdin)) { // ctrl+d -> exit program
       printf("\n");
       setenv("PATH", originalEnvPath, 1); // reset path to original
       break;
     }
+
+    // exit function:
     else if (strcmp(tokenList[0], "exit") == 0) { //exit -> exit program
       if(tokenList[1] == NULL){
       // tokenList[0] contains the first argument - 'exit'
       setenv("PATH", originalEnvPath, 1); // reset path
       break;
-    }else{
-	printf("Error: Too many arguments. Usage exit\n");
-      }
+    } else{
+	      printf("Error: Too many arguments. Usage exit\n");
+    }
+
     } // getpath function:
     else if (strcmp(tokenList[0], "getpath") ==  0) { // getpath -> print path
-      if(tokenList[1] != NULL){
-	printf("Error: Too many arguments. Usage getpath\n");
-      }else{
-        printf("%s\n", getenv("PATH"));
-      }
+      getpath();
     }
+    
     // setpath function: 
     else if (strcmp(tokenList[0], "setpath") == 0){ // setpath -> set path to first args
-      if(tokenList[1] == NULL){
-	printf("Error: Missing argument. Usage: setpath <directory>\n");
-      }
-      else if(tokenList[2] != NULL){
-	printf("Error: Too many arguments. Usage setpath <directory>\n");
-      }
-      else{
-        setenv("PATH", tokenList[1], 1);
-      }
+      setpath(tokenList);
     }
+
     // cd Command:
     else if (strcmp(tokenList[0], "cd") == 0) {
-      if(tokenList[1] == NULL){
-      // type 1 - no args -> put user in home directory:
-      chdir(getenv("HOME"));
-      } else if(strcmp(tokenList[1], "..") == 0){
-	// type 2 - '..' args -> go to parent directory:
-        chdir("..");
-      } else if (access(tokenList[1], F_OK) == 0) {
-	// type 3 - 'filepath' args -> go to directory:
-        chdir(tokenList[1]);
-      } else {
-        printf("Error: directory does not exist\n");
-      }
+      cd(tokenList);
     }
+
+    // runing external commands 
     else{
-      /* ELSE EXECUTE COMMAND AS AN EXTERNAL PROCESS: */
-        pid_t pid;
-        pid = fork();
-
-        if (pid < 0) { // negative pid -> failure
-            fprintf(stderr, "Fork failed\n");
-            return 1;
-        } else if (pid == 0) { // signifies child process
-            execvp(tokenList[0], tokenList); // passes userinput[0] (function) and rest of string as arg
-            // tokenList[0] == NULL, or cannot execute program - Failure
-            fprintf(stderr, "Command not found!\n");
-            return 1;
-        } else {
-            wait(NULL); // Parent waiting for child process to complete
-        }
+      externalcommand(tokenList);
     }
-
-
 
   }
 }

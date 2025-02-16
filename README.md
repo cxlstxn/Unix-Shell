@@ -51,6 +51,10 @@ Restore original path
 Exit
 ```
 
+". build.txt" to build shell.
+then ./shell to run. 
+
+
 
 ### To-do:
 - Begin working on Stage 5
