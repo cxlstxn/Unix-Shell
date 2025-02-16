@@ -15,10 +15,12 @@ int main() {
 
   while (1) {
 
-    // MAKE THIS FAILSAFE? ADD CONDITION FOR NULL IF FAILS:
-    char cwd[1024]; // Creates buffer 
-    getcwd(cwd, sizeof(cwd)); // gets working directory and saves it to cwd
-
+    char cwd[1024]; // Creates buffer
+    // get working directory and save it to cwd
+    if((getcwd(cwd, sizeof(cwd))) == NULL){
+      perror("Failure getting current working directory"); // Failure
+      return 1;
+    }
 
     /* DISPLAY PROMPT: */
     printf("%s>$ ", cwd); // command line
@@ -52,7 +54,7 @@ int main() {
     
     if (feof(stdin)) { // ctrl+d -> exit program
       printf("\n");
-      setenv("PATH", originalEnvPath, 1); // reset path to original - no changes persist
+      setenv("PATH", originalEnvPath, 1); // reset path to original
       break;
     }
     else if (strcmp(tokenList[0], "exit") == 0) { //exit -> exit program
@@ -86,37 +88,37 @@ int main() {
     // cd Command:
     else if (strcmp(tokenList[0], "cd") == 0) {
       if(tokenList[1] == NULL){
-      // type 1 - no args -> put user in home directory: -- works
+      // type 1 - no args -> put user in home directory:
       chdir(getenv("HOME"));
       } else if(strcmp(tokenList[1], "..") == 0){
+	// type 2 - '..' args -> go to parent directory:
         chdir("..");
       } else if (access(tokenList[1], F_OK) == 0) {
+	// type 3 - 'filepath' args -> go to directory:
         chdir(tokenList[1]);
       } else {
         printf("Error: directory does not exist\n");
-    }}
-
+      }
+    }
     else{
       /* ELSE EXECUTE COMMAND AS AN EXTERNAL PROCESS: */
         pid_t pid;
         pid = fork();
 
         if (pid < 0) { // negative pid -> failure
-            fprintf(stderr, "Fork failed\n"); // Fork failed
+            fprintf(stderr, "Fork failed\n");
             return 1;
         } else if (pid == 0) { // signifies child process
-            execvp(tokenList[0], tokenList); // passes user input[0] (function) and rest of string as argument
-            /*
-            Only reach this secti//on if the command cannot be located, tokenList[0] == NULL, or cannot execute program - not our fault
-            */
+            execvp(tokenList[0], tokenList); // passes userinput[0] (function) and rest of string as arg
+            // tokenList[0] == NULL, or cannot execute program - Failure
             fprintf(stderr, "Command not found!\n");
             return 1;
         } else {
             wait(NULL); // Parent waiting for child process to complete
         }
-    } 
-    } // closes while()
-  } // closes main()
-   //- NEEDED IF YOU UNCOMMENT THE CD COMMAND!!!!
-// path name, mode -> vari -> acces() !!
-// stat() -> use to var path exists
+    }
+
+
+
+  }
+}
