@@ -68,3 +68,5 @@ Exit
 - Begin working on Stage 5
 - Clean code
 - Change code to remove whitespace after a command
+- Change error message in command.c to perror 
+- Input should be no more than 512 
