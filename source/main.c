@@ -21,7 +21,7 @@ int main() {
     char cwd[1024]; // Creates buffer
     // get working directory and save it to cwd
     if((getcwd(cwd, sizeof(cwd))) == NULL){
-      perror("Failure getting current working directory"); // Failure
+      perror("Failure getting current working directory\n"); // Failure
       return 1;
     }
 
@@ -29,7 +29,7 @@ int main() {
     printf("%s>$ ", cwd); // command line
     fflush(stdout); // prompt appears immediately
 
-    char userinput[100];
+    char userinput[512]; // complain if anything more than 512 chars
 
     /* READ AND PARSE USER INPUT: */
     fgets(userinput, sizeof(userinput), stdin); // getting user input
@@ -79,7 +79,7 @@ int main() {
     
     // setpath function: 
     else if (strcmp(tokenList[0], "setpath") == 0){ // setpath -> set path to first args
-      setpath(tokenList);
+      setpath(tokenList); // SHOULD ONLY ACCEPT bin:c/.... NO WHITESPACE
     }
 
     // cd Command:

@@ -13,14 +13,14 @@ void getpath() {
     char* path = getenv("PATH");
     printf("%s\n", path);
 }
-
+// FUCKED:
 // setpath function: Sets new PATH:
 void setpath(char* tokenList[]) {
     if(tokenList[1] == NULL){
-	printf("Error: Missing argument. Usage: setpath <directory>\n");
-      }
+	perror(tokenList[1]);
+    } // lead with what caused error
       else if(tokenList[2] != NULL){
-	printf("Error: Too many arguments. Usage setpath <directory>\n");
+	perror(tokenList[0]);
       }
       else{
         setenv("PATH", tokenList[1], 1);
@@ -29,20 +29,25 @@ void setpath(char* tokenList[]) {
 
 // cd function:
 void cd(char* tokenList[]) {
+  // ".." automatically works - thanks UNIX
     if(tokenList[1] == NULL){
       // type 1 - no args -> put user in home directory:
       chdir(getenv("HOME"));
-      } else if(strcmp(tokenList[1], "..") == 0){
-	// type 2 - '..' args -> go to parent directory:
-        chdir("..");
       } else if (access(tokenList[1], F_OK) == 0) {
 	// type 3 - 'filepath' args -> go to directory:
-        chdir(tokenList[1]);
-      } else {
-        printf("Error: directory does not exist\n");
+      chdir(tokenList[1]); // chdir check output
+    } else {
+      perror("Error: directory does not exist\n");
       }
     }
 
+/*
+  else if(strcmp(tokenList[1], "..") == 0){
+	// type 2 - '..' args -> go to parent directory:
+        chdir("..");
+*/
+
+//chuck into array -> loop through array checking -- POTENTIAL HARD
 
 // external commands:
 void externalcommand(char* tokenList[]) {
@@ -56,7 +61,7 @@ void externalcommand(char* tokenList[]) {
         } else if (pid == 0) { // signifies child process
             execvp(tokenList[0], tokenList); // passes userinput[0] (function) and rest of string as arg
             // tokenList[0] == NULL, or cannot execute program - Failure
-            fprintf(stderr, "Command not found!\n");
+	    perror(tokenList[0]);
             return;
         } else {
             wait(NULL); // Parent waiting for child process to complete
