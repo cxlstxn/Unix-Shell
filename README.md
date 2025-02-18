@@ -67,3 +67,4 @@ Exit
 ### To-do:
 - Begin working on Stage 5
 - Clean code
+- Change code to remove whitespace after a command
