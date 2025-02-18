@@ -74,7 +74,7 @@ int main() {
       
     } // getpath function:
     else if (strcmp(tokenList[0], "getpath") ==  0) { // getpath -> print path
-      getpath();
+      getpath(tokenList);
     }
     
     // setpath function: 
