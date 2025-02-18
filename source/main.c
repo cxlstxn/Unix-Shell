@@ -34,6 +34,8 @@ int main() {
     /* READ AND PARSE USER INPUT: */
     fgets(userinput, sizeof(userinput), stdin); // getting user input
 
+
+
     // for printing the command prompt upon empty input
     if(userinput[0] == '\n'){
       continue;

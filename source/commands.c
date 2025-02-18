@@ -4,9 +4,40 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-
-
 #include "commands.h"
+
+
+
+// Start to History 
+
+char history_Array[HISTORY_SIZE][512]; // store up to 20 commandsof size 512 each
+int history_count =0; // number of commands entered
+int history_next = 0; //stores next available position in array
+
+//next holds next available position in array when reach end invoke circular apsect and use modulo to overwrite back to start -- if that makes sense
+
+void add_to_history(char * command){
+  if(command[0] == '!'){
+    printf("no commands stored in history");   // dont store history commands- return to prompt / reprint path 
+  }
+
+  
+  // store the command
+  strncpy(history_Array[history_next], command, sizeof(history_Array[history_next]) -1); // stores command into next avavailable spot in history array , leaves space for null terminator 
+
+  history_Array[history_next][sizeof(history_Array[history_next])] = '\0'; // manually adding in null terminator 
+
+  history_next = (history_next + 1) % HISTORY_SIZE;
+
+
+
+
+
+  
+}
+
+
+
 
 // getpath function: Prints the current PATH:
 void getpath() {
