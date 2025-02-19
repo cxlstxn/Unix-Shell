@@ -12,6 +12,6 @@ void externalcommand(char* tokenList[]);
 
 void add_to_history(char*command);
 void print_history();
-char * get_history(char*input);
+char* get_history(char*input);
 
 #endif

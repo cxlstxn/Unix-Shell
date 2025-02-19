@@ -28,13 +28,7 @@ void add_to_history(char * command){
 
   history_Array[history_next][sizeof(history_Array[history_next])] = '\0'; // manually adding in null terminator 
 
-  history_next = (history_next + 1) % HISTORY_SIZE;
-
-
-
-
-
-  
+  history_next = (history_next + 1) % HISTORY_SIZE;  
 }
 
 
@@ -44,7 +38,6 @@ void add_to_history(char * command){
 // delete trailing whitespace on commands "ls   " should be accpeted - tokens?
 // sort perror stuff for all errors - need confirmation on something
 // deal with reading in >512 char inputs - error deals with this?
->>>>>>> b56ef326799c830d3f72e9bf57f483f0780edcf9
 
 
 // getpath function: Prints the current PATH:
