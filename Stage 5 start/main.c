@@ -9,7 +9,7 @@
 #include "commands.h"
 
 int main() {
-
+  History history[19];
   /* SAVE THE CURRENT PATH */
   char* originalEnvPath = getenv("PATH"); // fetches and stores the original path to restore later
   chdir(getenv("HOME")); // changes directory to user's home path - shell running in user's HOME - good starting point
@@ -17,11 +17,11 @@ int main() {
   /* DO WHILE SHELL HAS NOT TERMINATED: */
 
   while (1) {
-
+    int n = 0;
     char cwd[1024]; // Creates buffer
     // get working directory and save it to cwd
     if((getcwd(cwd, sizeof(cwd))) == NULL){
-      perror("Failure getting current working directory\n"); // Failure
+      perror("Failure getting current working directory"); // Failure
       return 1;
     }
 
@@ -29,18 +29,23 @@ int main() {
     printf("%s>$ ", cwd); // command line
     fflush(stdout); // prompt appears immediately
 
-    char userinput[512]; // complain if anything more than 512 chars
+    char userinput[100];
 
     /* READ AND PARSE USER INPUT: */
     fgets(userinput, sizeof(userinput), stdin); // getting user input
-
-
 
     // for printing the command prompt upon empty input
     if(userinput[0] == '\n'){
       continue;
     }
-
+    
+    /* Check if the user input is a history command */
+    if (userinput[0] != '!'){
+      strcpy(history[n].com, userinput);
+      history[n].comnum = n; 
+      printf(history[n].com, "%s\n");
+      n++;
+    }
     char* tokenList[100];
     int token_count = 0;
     char* token = strtok(userinput, " < \t | > & ;"); // tokens to look for
@@ -76,12 +81,12 @@ int main() {
       
     } // getpath function:
     else if (strcmp(tokenList[0], "getpath") ==  0) { // getpath -> print path
-      getpath(tokenList);
+      getpath();
     }
     
     // setpath function: 
     else if (strcmp(tokenList[0], "setpath") == 0){ // setpath -> set path to first args
-      setpath(tokenList); // SHOULD ONLY ACCEPT bin:c/.... NO WHITESPACE
+      setpath(tokenList);
     }
 
     // cd Command:

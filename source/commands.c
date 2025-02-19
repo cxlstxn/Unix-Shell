@@ -8,6 +8,7 @@
 
 
 
+
 // Start to History 
 
 char history_Array[HISTORY_SIZE][512]; // store up to 20 commandsof size 512 each
@@ -38,45 +39,54 @@ void add_to_history(char * command){
 
 
 
+// TO FIX:
+// exit command should exit firt time on exit
+// delete trailing whitespace on commands "ls   " should be accpeted - tokens?
+// sort perror stuff for all errors - need confirmation on something
+// deal with reading in >512 char inputs - error deals with this?
+>>>>>>> b56ef326799c830d3f72e9bf57f483f0780edcf9
+
 
 // getpath function: Prints the current PATH:
-void getpath() {
-    char* path = getenv("PATH");
-    printf("%s\n", path);
+void getpath(char* tokenList[]) {
+  if(tokenList[1] != NULL){
+    // whitepsace after the function (tokenList[0]) should be treated as valid - currently isn't
+    printf("Error: Too many arguments. Usage getpath\n"); // fires when more than one arg (one arg being getpath)
+  }else{
+    printf("%s\n", getenv("PATH"));
+  }
 }
-// FUCKED:
+
+
 // setpath function: Sets new PATH:
 void setpath(char* tokenList[]) {
     if(tokenList[1] == NULL){
+      // lead with what caused error:
 	perror(tokenList[1]);
-    } // lead with what caused error
+    } 
       else if(tokenList[2] != NULL){
-	perror(tokenList[0]);
+	perror(tokenList[0]); // printing success - confused
       }
       else{
         setenv("PATH", tokenList[1], 1);
       }
-    }
+}
+
 
 // cd function:
 void cd(char* tokenList[]) {
-  // ".." automatically works - thanks UNIX
+  // ".." automatically works - thanks UNIX!
     if(tokenList[1] == NULL){
-      // type 1 - no args -> put user in home directory:
+      // no args -> HOME
       chdir(getenv("HOME"));
-      } else if (access(tokenList[1], F_OK) == 0) {
-	// type 3 - 'filepath' args -> go to directory:
-      chdir(tokenList[1]); // chdir check output
-    } else {
-      perror("Error: directory does not exist\n");
+    }else if (tokenList[2] != NULL) {
+      // Too many args
+	printf("Error: Too many arguments. Usage cd directory\n");
+    }else if(chdir(tokenList[1]) != 0){
+      // Assignemnt failed
+	perror(tokenList[1]);
       }
     }
-
-/*
-  else if(strcmp(tokenList[1], "..") == 0){
-	// type 2 - '..' args -> go to parent directory:
-        chdir("..");
-*/
 
 //chuck into array -> loop through array checking -- POTENTIAL HARD
 
