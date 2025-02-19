@@ -65,12 +65,8 @@ Exit
 
 
 ### To-do:
-- Begin working on Stage 5
+- Finish Stage 5
 - Clean code
-- Change code to remove whitespace after a command
-- Change error message in command.c to perror 
-- Input should be no more than 512
+- **Change code to remove whitespace after a command**
 - CUT OFF WHITESPACE - "ls            " should be a valid command - currently not so
-- Fix exit command - sometimes takes many times to exit
-- ```setpath``` fucked - not sure what's wrong
-- Simplify ```cd``` if time - not super important
+- **Fix exit command - sometimes takes many times to exit**

@@ -4,25 +4,24 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+
+
 #include "commands.h"
-
-
 
 
 // Start to History 
 
 char history_Array[HISTORY_SIZE][512]; // store up to 20 commandsof size 512 each
-int history_count =0; // number of commands entered
+int history_count = 0; // number of commands entered
 int history_next = 0; //stores next available position in array
 
-//next holds next available position in array when reach end invoke circular apsect and use modulo to overwrite back to start -- if that makes sense
+// next holds next available position in array
+// when we reach the end we invoke circular apsect using modulo to overwrite from start
 
 void add_to_history(char * command){
   if(command[0] == '!'){
     printf("no commands stored in history");   // dont store history commands- return to prompt / reprint path 
   }
-
-  
   // store the command
   strncpy(history_Array[history_next], command, sizeof(history_Array[history_next]) -1); // stores command into next avavailable spot in history array , leaves space for null terminator 
 
@@ -34,9 +33,8 @@ void add_to_history(char * command){
 
 
 // TO FIX:
-// exit command should exit firt time on exit
+// exit command should exit firt time on exit - not sure if this is working or not 
 // delete trailing whitespace on commands "ls   " should be accpeted - tokens?
-// sort perror stuff for all errors - need confirmation on something
 // deal with reading in >512 char inputs - error deals with this?
 
 
@@ -53,12 +51,12 @@ void getpath(char* tokenList[]) {
 
 // setpath function: Sets new PATH:
 void setpath(char* tokenList[]) {
-    if(tokenList[1] == NULL){
+  if(tokenList[1] == NULL){
       // lead with what caused error:
-	perror(tokenList[1]);
+	printf("Error: Too few arguments. Usage setpath <pathname>\n");
     } 
       else if(tokenList[2] != NULL){
-	perror(tokenList[0]); // printing success - confused
+	printf("Error: Too many arguments. Usage setpath <pathname>\n"); // printing success - confused
       }
       else{
         setenv("PATH", tokenList[1], 1);
