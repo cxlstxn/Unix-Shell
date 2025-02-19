@@ -23,7 +23,7 @@ void add_to_history(char * command){
 
   
   // store the command
-  strncpy(history_Array[history_next], command, sizeof(history_Array[history_next]) -1); // stores command into next avavailable spot in history array , leaves space for null terminator 
+  strncpy(history_Array[history_next], command, sizeof(history_Array[history_next]) -1); // stores command into next avavailable spot in history array ,leaves space for null terminator 
 
   history_Array[history_next][sizeof(history_Array[history_next])] = '\0'; // manually adding in null terminator 
 
@@ -47,7 +47,7 @@ void getpath() {
 // FUCKED:
 // setpath function: Sets new PATH:
 void setpath(char* tokenList[]) {
-OB    if(tokenList[1] == NULL){
+    if(tokenList[1] == NULL){
 	perror(tokenList[1]);
     } // lead with what caused error
       else if(tokenList[2] != NULL){
