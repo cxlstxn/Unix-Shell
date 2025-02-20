@@ -65,7 +65,10 @@ Exit
 
 
 ### To-do:
-- Finish Stage 5
+- Finish Stage 5:
+  - Test storing commands
+  - Test print_history
+  - Start invoke commands from history section
 - Clean code
 - **Change code to remove whitespace after a command**
 - CUT OFF WHITESPACE - "ls            " should be a valid command - currently not so
