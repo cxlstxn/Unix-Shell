@@ -9,25 +9,39 @@
 #include "commands.h"
 
 
-// Start to History 
+// DECLARING GLOBAL HISTORY VARS:
 
-char history_Array[HISTORY_SIZE][512]; // store up to 20 commandsof size 512 each
+char history_array[HISTORY_SIZE][512]; // store up to 20 commands of size 512 each
 int history_count = 0; // number of commands entered
 int history_next = 0; //stores next available position in array
 
-// next holds next available position in array
+
 // when we reach the end we invoke circular apsect using modulo to overwrite from start
 
-void add_to_history(char * command){
+// command is user inputted string 
+void add_to_history(char* command){
   if(command[0] == '!'){
     printf("no commands stored in history");   // dont store history commands- return to prompt / reprint path 
   }
-  // store the command
-  strncpy(history_Array[history_next], command, sizeof(history_Array[history_next]) -1); // stores command into next avavailable spot in history array , leaves space for null terminator 
+  // stores command into next avavailable position in history_array, leave space for null terminator:
+  strncpy(history_array[history_next], command, sizeof(history_array[history_next]) - 1); // copies 511 bytes, 1 for null  
 
-  history_Array[history_next][sizeof(history_Array[history_next])] = '\0'; // manually adding in null terminator 
+  // manually add null terminator:
+  history_array[history_next][sizeof(history_array[history_next]) - 1 ] = '\0'; // manually adding in null terminator 
 
-  history_next = (history_next + 1) % HISTORY_SIZE;  
+  history_next = (history_next + 1) % HISTORY_SIZE;  // Circular buffer
+}
+
+void print_history(char* tokenList[]){
+  // no commands entered:
+  if(history_count == 0){
+    printf("No commands in history!\n");
+    return;
+  }
+  
+  for(int i = 0; i < history_count; i++){
+    printf("%d: %s\n", i+1, history_array[i]);
+  }
 }
 
 

@@ -1,6 +1,8 @@
 // shell.h
 #ifndef COMMANDS_H // avoids redefinition errors
 #define COMMANDS_H
+
+// Number of history items to store:
 #define HISTORY_SIZE 20 
 
 

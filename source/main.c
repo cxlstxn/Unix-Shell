@@ -14,6 +14,8 @@ int main() {
   char* originalEnvPath = getenv("PATH"); // fetches and stores the original path to restore later
   chdir(getenv("HOME")); // changes directory to user's home path - shell running in user's HOME - good starting point
 
+  /* LOAD HISTORY: */
+
   /* DO WHILE SHELL HAS NOT TERMINATED: */
 
   while (1) {
@@ -89,6 +91,10 @@ int main() {
       cd(tokenList);
     }
 
+    // print history function:
+    else if (strcmp(tokenList[0], "history") == 0){
+      print_history(); 
+    }
     // runing external commands 
     else{
       externalcommand(tokenList);
