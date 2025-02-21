@@ -43,6 +43,19 @@ int main() {
       continue;
     }
 
+    // prepare userinput for adding to history:
+    char originalinput[512];
+    strcpy(originalinput, userinput);
+
+    // search for new line to replace with null
+    char *newline = strchr(originalinput, '\n');
+    if (newline){
+      *newline = '\0'; // replacing newline from fgets() with null
+    }
+    //Add user input to history:
+    add_to_history(originalinput);
+
+      
     char* tokenList[100];
     int token_count = 0;
     char* token = strtok(userinput, " < \t | > & ;"); // tokens to look for

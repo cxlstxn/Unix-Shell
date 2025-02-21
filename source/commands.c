@@ -23,10 +23,14 @@ int history_next = 0; //stores next available position in array
 // when we reach the end we invoke circular apsect using modulo to overwrite from start
 
 // command is user inputted string 
-void add_to_history(char* tokenList[]){
-  if(command[0] == '!'){
-    printf("no commands stored in history");   // dont store history commands- return to prompt / reprint path 
+void add_to_history(char* command){
+  printf("%d\n", history_count); // FOR TESTING !!!
+
+  // if begins with !, ignore, don't add to history:
+  if(strcmp(command, "!") == 0){
+    return;
   }
+   
   // stores command into next avavailable position in history_array, leave space for null terminator:
   strncpy(history_array[history_next], command, sizeof(history_array[history_next]) - 1); // copies 511 bytes, 1 for null  
 
@@ -34,10 +38,12 @@ void add_to_history(char* tokenList[]){
   history_array[history_next][sizeof(history_array[history_next]) - 1 ] = '\0'; // manually adding in null terminator 
 
   history_next = (history_next + 1) % HISTORY_SIZE;  // Circular buffer
+  history_count ++; // another command added -- WILL KEEP GOING NEED WAY TO STOP AT 20
 }
 
-void print_history(char* tokenList[]){
-  // no commands entered:
+// print_history: prints the history
+void print_history(){
+  // no commands in history:
   if(history_count == 0){
     printf("No commands in history!\n");
     return;
@@ -46,6 +52,18 @@ void print_history(char* tokenList[]){
   for(int i = 0; i < history_count; i++){
     printf("%d: %s\n", i+1, history_array[i]);
   }
+}
+
+
+// invoke_history: invokes a command from the history
+void invoke_history(char* tokenList[]){
+  /*
+  if(strcmp(tokenList[0],"!") == 0{
+      if(strcmp(tokenList[1],"!") == 0){
+	// execute last command:
+      }
+  }
+  */
 }
 
 
