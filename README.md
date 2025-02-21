@@ -66,9 +66,11 @@ Exit
 
 ### To-do:
 - Finish Stage 5:
-  - Test storing commands
-  - Test print_history
+  - Test storing commands -- Wokring under light testing
+  - Test print_history -- Not correct yet, potential core dump
   - Start invoke commands from history section
+  - **Sort how to deal with the history_count variable as the hsitory_array fills**
+  - Sort way to re-execute commands
 - Clean code
 - **Change code to remove whitespace after a command**
 - CUT OFF WHITESPACE - "ls            " should be a valid command - currently not so
