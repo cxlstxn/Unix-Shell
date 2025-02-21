@@ -8,6 +8,10 @@
 
 #include "commands.h"
 
+// TO FIX:
+// exit command should exit firt time on exit - not sure if this is working or not 
+// delete trailing whitespace on commands "ls   " should be accpeted - tokens?
+// deal with reading in >512 char inputs - error deals with this?
 
 // DECLARING GLOBAL HISTORY VARS:
 
@@ -19,7 +23,7 @@ int history_next = 0; //stores next available position in array
 // when we reach the end we invoke circular apsect using modulo to overwrite from start
 
 // command is user inputted string 
-void add_to_history(char* command){
+void add_to_history(char* tokenList[]){
   if(command[0] == '!'){
     printf("no commands stored in history");   // dont store history commands- return to prompt / reprint path 
   }
@@ -43,13 +47,6 @@ void print_history(char* tokenList[]){
     printf("%d: %s\n", i+1, history_array[i]);
   }
 }
-
-
-
-// TO FIX:
-// exit command should exit firt time on exit - not sure if this is working or not 
-// delete trailing whitespace on commands "ls   " should be accpeted - tokens?
-// deal with reading in >512 char inputs - error deals with this?
 
 
 // getpath function: Prints the current PATH:
