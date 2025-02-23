@@ -75,3 +75,4 @@ Exit
 - **Change code to remove whitespace after a command**
 - CUT OFF WHITESPACE - "ls            " should be a valid command - currently not so
 - **Fix exit command - sometimes takes many times to exit**
+- Add functions to single array which can be looped through instead -- if time 

@@ -24,7 +24,7 @@ int history_next = 0; //stores next available position in array
 
 // command is user inputted string 
 void add_to_history(char* command){
-  printf("%d\n", history_count); // FOR TESTING !!!
+  //  printf("%d\n", history_count); // FOR TESTING !!!
 
   // if begins with !, ignore, don't add to history:
   if(strcmp(command, "!") == 0){
@@ -38,7 +38,9 @@ void add_to_history(char* command){
   history_array[history_next][sizeof(history_array[history_next]) - 1 ] = '\0'; // manually adding in null terminator 
 
   history_next = (history_next + 1) % HISTORY_SIZE;  // Circular buffer
-  history_count ++; // another command added -- WILL KEEP GOING NEED WAY TO STOP AT 20
+  if(history_count < HISTORY_SIZE){
+    history_count ++;
+  }
 }
 
 // print_history: prints the history
