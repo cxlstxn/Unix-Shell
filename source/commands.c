@@ -124,9 +124,9 @@ void externalcommand(char* tokenList[]) {
         } else if (pid == 0) { // signifies child process
             execvp(tokenList[0], tokenList); // passes userinput[0] (function) and rest of string as arg
             // tokenList[0] == NULL, or cannot execute program - Failure
-	    perror(tokenList[0]);
-            return;
+            perror(tokenList[0]);
+            exit(1);
         } else {
             wait(NULL); // Parent waiting for child process to complete
         }
-    }
+}

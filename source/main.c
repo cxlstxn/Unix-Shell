@@ -18,8 +18,10 @@ int main() {
 
   /* DO WHILE SHELL HAS NOT TERMINATED: */
 
-  while (1) {
 
+  char userinput[512]; // complain if anything more than 512 chars
+
+  while (1) {
     char cwd[1024]; // Creates buffer
     // get working directory and save it to cwd
     if((getcwd(cwd, sizeof(cwd))) == NULL){
@@ -31,11 +33,9 @@ int main() {
     printf("%s>$ ", cwd); // command line
     fflush(stdout); // prompt appears immediately
 
-    char userinput[512]; // complain if anything more than 512 chars
 
     /* READ AND PARSE USER INPUT: */
     fgets(userinput, sizeof(userinput), stdin); // getting user input
-
 
 
     // for printing the command prompt upon empty input
@@ -69,7 +69,6 @@ int main() {
     }
     tokenList[token_count++] = NULL; //last has to be null for execvp to work
 
-
     /* IF COMMAND IS BUILT-IN INVOKE APPROPRIATE FUNCTIONS: */
 
 
@@ -85,8 +84,8 @@ int main() {
       // tokenList[0] contains the first argument - 'exit'
       setenv("PATH", originalEnvPath, 1); // reset path
       break;
-    }else{
-	printf("Error: Too many arguments. Usage exit\n");
+    } else{
+	    printf("Error: Too many arguments. Usage exit\n");
     }
       
     } // getpath function:
@@ -112,6 +111,5 @@ int main() {
     else{
       externalcommand(tokenList);
     }
-
   }
 }
