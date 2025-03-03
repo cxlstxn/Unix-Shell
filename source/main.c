@@ -52,8 +52,18 @@ int main() {
     if (newline){
       *newline = '\0'; // replacing newline from fgets() with null
     }
-    //Add user input to history:
-    add_to_history(originalinput);
+    
+
+    // check if history invokation - don't add to history:
+    if(userinput[0] == "!"){
+      // set userinput to returned string:
+      *userinput = invoke_history(userinput);
+      //break;
+    }else{
+     //Add user input to history:
+      add_to_history(originalinput);
+    }
+    
 
       
     char* tokenList[100];

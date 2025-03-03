@@ -24,12 +24,12 @@ int history_next = 0; //stores next available position in array
 
 // command is user inputted string 
 void add_to_history(char* command){
-  //  printf("%d\n", history_count); // FOR TESTING !!!
-
+  /*
   // if begins with !, ignore, don't add to history:
   if(strcmp(command, "!") == 0){
     return;
   }
+  */
    
   // stores command into next avavailable position in history_array, leave space for null terminator:
   strncpy(history_array[history_next], command, sizeof(history_array[history_next]) - 1); // copies 511 bytes, 1 for null  
@@ -50,7 +50,6 @@ void print_history(){
     printf("No commands in history!\n");
     return;
   }
-  
   for(int i = 0; i < history_count; i++){
     printf("%d: %s\n", i+1, history_array[i]);
   }
@@ -58,14 +57,33 @@ void print_history(){
 
 
 // invoke_history: invokes a command from the history
-void invoke_history(char* tokenList[]){
-  /*
-  if(strcmp(tokenList[0],"!") == 0{
-      if(strcmp(tokenList[1],"!") == 0){
-	// execute last command:
+char* invoke_history(char* userinput){
+  // userinput[0] guarenteed to be '!'
+      if(strcmp(userinput[1],"!") == 0){
+	// last command:
+	return history_array[(history_next - 1 + HISTORY_SIZE) % HISTORY_SIZE];
       }
-  }
-  */
+      // nth newest branch:
+      else if (userinput[1] == "-"){
+	if(userinput[2] <= 0 || userinput[2] > history_count){
+	  // invalid number
+	  printf("Error: Invalid Arugment: Usage !-<number> or !<number>\n");
+	} else{
+	  // valid number:
+	  int i = (history_next - userinput[2] + HISTORY_SIZE) % HISTORY_SIZE;
+	  return history_array[i];	  
+	}
+      }
+      // nth oldest branch:
+      else if(userinput[1] > 0 && userinput[1] <= history_count){
+	// valid
+	int index = (history_next - history_count + (userinput[1]+1) + HISTORY_SIZE) % HISTORY_SIZE;
+	return history_array[index];
+      }else{
+	// invalid number:
+	printf("Error: Invalid Arugment: Usage !-<number> or !<number>\n");	
+      }
+	return NULL;
 }
 
 
