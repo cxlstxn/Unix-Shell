@@ -5,6 +5,8 @@
 // Number of history items to store:
 #define HISTORY_SIZE 20 
 
+char*str_trim(char* str);
+
 void getpath();
 void setpath(char* tokenList[]);
 void cd(char* tokenList[]);

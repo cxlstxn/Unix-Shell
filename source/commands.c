@@ -176,3 +176,20 @@ void externalcommand(char* tokenList[]) {
             wait(NULL); // Parent waiting for child process to complete
         }
 }
+
+char* str_trim(char* str){
+  if(str == NULL){
+    return str;
+  }
+  char* start = str;
+  while(*start == ' ' || *start == '\n' || *start == '\t'){
+    start++; // move pointer in 
+  }
+  char* end = start + strlen(start)-1;
+  while(end > start && (*end == ' ' || *end == '\n' || *end == '\t')){
+    *end = '\0'; // null term
+    end--; // move pointer back
+  }
+  // return trimmed string
+  return start;
+}

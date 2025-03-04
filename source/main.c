@@ -36,6 +36,7 @@ int main() {
 
     /* READ AND PARSE USER INPUT: */
     fgets(userinput, sizeof(userinput), stdin); // getting user input
+    str_trim(userinput);
 
 
     // for printing the command prompt upon empty input
