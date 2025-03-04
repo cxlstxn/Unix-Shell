@@ -55,13 +55,18 @@ int main() {
     
 
     // check if history invokation - don't add to history:
-    if(userinput[0] == "!"){
+    if(userinput[0] == '!'){
       // set userinput to returned string:
-      *userinput = invoke_history(userinput);
+      strcpy(userinput, invoke_history(userinput)); // change userinput to the history command that is associated with the input
       //break;
     }else{
      //Add user input to history:
       add_to_history(originalinput);
+    }
+
+    // To ensure we don't hit external commands with '\n'
+     if(userinput[0] == '\n'){
+      continue;
     }
     
 

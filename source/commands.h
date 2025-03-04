@@ -10,8 +10,9 @@ void setpath(char* tokenList[]);
 void cd(char* tokenList[]);
 void externalcommand(char* tokenList[]);
 
+// History Functions:
 void add_to_history(char*command);
 void print_history();
-char* get_history(char*input);
+char* invoke_history(char* userinput);
 
 #endif

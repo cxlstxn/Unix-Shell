@@ -24,12 +24,6 @@ int history_next = 0; //stores next available position in array
 
 // command is user inputted string 
 void add_to_history(char* command){
-  /*
-  // if begins with !, ignore, don't add to history:
-  if(strcmp(command, "!") == 0){
-    return;
-  }
-  */
    
   // stores command into next avavailable position in history_array, leave space for null terminator:
   strncpy(history_array[history_next], command, sizeof(history_array[history_next]) - 1); // copies 511 bytes, 1 for null  
@@ -58,18 +52,49 @@ void print_history(){
 
 // invoke_history: invokes a command from the history
 char* invoke_history(char* userinput){
+  // printf("Error: No Commands In History!\n); always printing when value entered, even if valid value
   // userinput[0] guarenteed to be '!'
-      if(strcmp(userinput[1],"!") == 0){
-	// last command:
-	return history_array[(history_next - 1 + HISTORY_SIZE) % HISTORY_SIZE];
+  // "!12hello"
+  //sscanf(userinput, "%c%d%c") - returns number of binded vars - if not 2 -> error
+
+  
+  int result = sscanf(userinput, "%c%d%c"); // should return 1/2 for valid cases
+  if(result == 1){
+    return history_array[(history_next - 1 + HISTORY_SIZE) % HISTORY_SIZE];
+  }else if (result == 2){
+    // nth newest branch:
+    if((userinput[1] == '-') && ((userinput[2] <= history_count) && (userinput[2] >= 0))){
+	  int i = (history_next - userinput[2] + HISTORY_SIZE) % HISTORY_SIZE;
+	  return history_array[i];
+	  // nth oldest branch:
+      }else if ((userinput[2] <= history_count) && (userinput[2] >= 0)){
+	int index = (history_next - history_count + (userinput[1]+1) + HISTORY_SIZE) % HISTORY_SIZE;
+	return history_array[index];
       }
-      // nth newest branch:
-      else if (userinput[1] == "-"){
+  }else{
+    // result >= 3 -> invalid:
+    printf("Error: Invalid Argument: Usage !-<number> or !<number>\n");
+   }
+  return "\n";
+}
+  
+  /*
+  if(userinput[1] == '!' && history_count > 0){
+    // last command:
+    printf("--------------!! Clause-------------\n");
+    return history_array[(history_next - 1 + HISTORY_SIZE) % HISTORY_SIZE];
+  }else if(history_count < 0){
+    printf("Error: No Commands In History!\n");
+  }
+  // nth newest branch:
+  else if (userinput[1] == '-'){
+    printf("- recognised\n");
 	if(userinput[2] <= 0 || userinput[2] > history_count){
 	  // invalid number
 	  printf("Error: Invalid Arugment: Usage !-<number> or !<number>\n");
 	} else{
 	  // valid number:
+	  printf("----------------!-n Clause - valid section------------\n");
 	  int i = (history_next - userinput[2] + HISTORY_SIZE) % HISTORY_SIZE;
 	  return history_array[i];	  
 	}
@@ -77,14 +102,17 @@ char* invoke_history(char* userinput){
       // nth oldest branch:
       else if(userinput[1] > 0 && userinput[1] <= history_count){
 	// valid
+	printf("-------------!n Clause - valid section-------------\n");
 	int index = (history_next - history_count + (userinput[1]+1) + HISTORY_SIZE) % HISTORY_SIZE;
 	return history_array[index];
       }else{
 	// invalid number:
 	printf("Error: Invalid Arugment: Usage !-<number> or !<number>\n");	
       }
-	return NULL;
-}
+      printf("----------Invalid Command Clause returning newline-----------------\n");
+      return "\n"; // error case - NULL/"" results in core dump
+  */
+
 
 
 // getpath function: Prints the current PATH:
