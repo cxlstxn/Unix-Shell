@@ -69,8 +69,6 @@ int main() {
      if(userinput[0] == '\n'){
       continue;
     }
-    
-
       
     char* tokenList[100];
     int token_count = 0;
