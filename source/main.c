@@ -16,6 +16,10 @@ int main() {
 
   /* LOAD HISTORY: */
 
+  if (access(".hist_list", F_OK) == 0) { // file exists
+    loadHistory();
+  }
+  
   /* DO WHILE SHELL HAS NOT TERMINATED: */
 
 
@@ -89,6 +93,7 @@ int main() {
     if (feof(stdin)) { // ctrl+d -> exit program
       printf("\n");
       setenv("PATH", originalEnvPath, 1); // reset path to original
+      saveHistory();
       break;
     }
 
@@ -97,6 +102,7 @@ int main() {
       if(tokenList[1] == NULL){
       // tokenList[0] contains the first argument - 'exit'
       setenv("PATH", originalEnvPath, 1); // reset path
+      saveHistory();
       break;
     } else{
 	    printf("Error: Too many arguments. Usage exit\n");

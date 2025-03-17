@@ -17,4 +17,11 @@ void add_to_history(char*command);
 void print_history();
 char* invoke_history(char* userinput);
 
+
+void add_to_history(char*command);
+void print_history();
+void saveHistory();
+void loadHistory();
+
+
 #endif

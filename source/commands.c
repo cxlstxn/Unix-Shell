@@ -45,8 +45,9 @@ void print_history(){
     return;
   }
   for(int i = 0; i < history_count; i++){
-    printf("%d: %s\n", i+1, history_array[i]);
-  }
+    int index = (history_next - 1 - i + HISTORY_SIZE) % HISTORY_SIZE;
+    printf("%d: %s\n", i+1, history_array[index]);
+}
 }
 
 
@@ -90,9 +91,6 @@ char* invoke_history(char* userinput){
 }
 
 
-  
-
-
 // getpath function: Prints the current PATH:
 void getpath(char* tokenList[]) {
   if(tokenList[1] != NULL){
@@ -122,17 +120,51 @@ void setpath(char* tokenList[]) {
 // cd function:
 void cd(char* tokenList[]) {
   // ".." automatically works - thanks UNIX!
-    if(tokenList[1] == NULL){
-      // no args -> HOME
-      chdir(getenv("HOME"));
-    }else if (tokenList[2] != NULL) {
+  if(tokenList[1] == NULL){
+    // no args -> HOME
+    chdir(getenv("HOME"));
+  }else if (tokenList[2] != NULL) {
       // Too many args
 	printf("Error: Too many arguments. Usage cd directory\n");
-    }else if(chdir(tokenList[1]) != 0){
-      // Assignemnt failed
+  }else if(chdir(tokenList[1]) != 0){
+  // Assignemnt failed
 	perror(tokenList[1]);
-      }
+  }
+}
+
+void saveHistory(){
+  FILE *fptr;
+  chdir(getenv("HOME"));
+  fptr = fopen(".hist_list", "w"); 
+  if (fptr == NULL){
+    printf("Error: Failure saving History!\n");
+  }
+  fprintf(fptr, "%d\n", history_next); //save history next to first line
+  fprintf(fptr, "%d\n", history_count);//save history count to second
+  for(int i = 0; i < history_count; i++){
+    fprintf(fptr, "%s \n", history_array[i]);
+  }
+  fclose(fptr);
+}
+
+void loadHistory(){
+  FILE *fptr;
+  char str[512];
+  fptr = fopen(".hist_list", "r");
+  if (fptr == NULL){
+    perror("Could not open history file\n");
+  }
+  fscanf(fptr, "%d\n", &history_next);//load history next from first line
+  fscanf(fptr, "%d\n", &history_count);// load history count from second line
+  for (int i = 0; i < history_count; i++) {
+    if (fgets(str, sizeof(str), fptr) != NULL) {
+      str[strcspn(str, "\n")] = '\0';  // Remove newline
+      strncpy(history_array[i], str, sizeof(history_array[i]) - 1);//copy file line to history array
+      history_array[i][sizeof(history_array[i]) - 1] = '\0';//manually place null value
     }
+  }
+  fclose(fptr);
+}
 
 //chuck into array -> loop through array checking -- POTENTIAL HARD
 
