@@ -30,6 +30,14 @@
   - ```..``` - sets directory to parent folder
   - ```filepath``` - sets directory to requested filepath if valid 
 
+### Stage 5:
+- Implemented History, 20 commands wrapping around when overflow.
+  - ```history``` - Returns a list of up to 20 of the last commands. 
+
+### Stage 6:
+- Implemented saving history, On start the shell loads history from a file. 
+
+
 ## Overview:
 
 ```
@@ -65,12 +73,4 @@ Exit
 
 
 ### To-do:
-- Finish Stage 5:
-  - Test storing commands -- Wokring under light testing
-  - Test print_history -- Not correct yet, potential core dump
-  - Start invoke commands from history section
-  - **Sort way to re-execute commands**
-- Clean code
-- **Change code to remove whitespace after a command**
-- CUT OFF WHITESPACE - "ls            " should be a valid command - currently not so
-- Add functions to single array which can be looped through instead -- if time 
+- Start Stage 7. 
