@@ -18,8 +18,28 @@ char history_array[HISTORY_SIZE][512]; // store up to 20 commands of size 512 ea
 int history_count = 0; // number of commands entered
 int history_next = 0; //stores next available position in array
 
+Alias* alias_array[10]; // alias array to hold 10 user aliases
+int num_aliases = 0;
+// define global max alias amount?
 
-// when we reach the end we invoke circular apsect using modulo to overwrite from start
+void add_alias(char* alias_name, char* command_name){
+  if(num_aliases == 10){
+    printf("Error: Max number of aliases reached, remove one before adding another! \n");
+    break;
+  }
+  // loop through array and check there are no duplicate aliases
+  for(int i = 0; i<num_alises; i++){
+    if(alias_array[i]->original_name == *command_name){
+      // alias exists -> overwrite it with new alias_name:
+      printf("Alias alredy exists! Overwriting...\n");
+      alias_array[i]->new_name = alias_name; // set the old alias name to the new one
+      break;
+    }   
+  }
+  // alias doesn't already exist -> add it
+  //while(alias_array
+	   
+}
 
 // command is user inputted string 
 void add_to_history(char* command){
