@@ -9,8 +9,7 @@
 #include "commands.h"
 
 // TO FIX:
-// exit command should exit firt time on exit - not sure if this is working or not 
-// delete trailing whitespace on commands "ls   " should be accpeted - tokens?
+// exit command should exit firt time on exit - not sure if this is working or not
 // deal with reading in >512 char inputs - error deals with this?
 
 // DECLARING GLOBAL HISTORY VARS:
@@ -45,11 +44,14 @@ void print_history(){
     return;
   }
   for(int i = 0; i < history_count; i++){
-    int index = (history_next - 1 - i + HISTORY_SIZE) % HISTORY_SIZE;
-    printf("%d: %s\n", i+1, history_array[index]);
-}
+    //int index = (history_next - 1 - i + HISTORY_SIZE) % HISTORY_SIZE;
+    //printf("%d: %s\n", i+1, history_array[index]);
+    printf("%d: %s\n", i+1, history_array[i]);
+
 }
 
+
+}
 
 // invoke_history: invokes a command from the history
 char* invoke_history(char* userinput){
@@ -132,12 +134,13 @@ void cd(char* tokenList[]) {
   }
 }
 
+
 void saveHistory(){
   FILE *fptr;
   chdir(getenv("HOME"));
   fptr = fopen(".hist_list", "w"); 
   if (fptr == NULL){
-    printf("Error: Failure saving History!\n");
+    printf("Error: Failure saving History!\n"); // perror
   }
   fprintf(fptr, "%d\n", history_next); //save history next to first line
   fprintf(fptr, "%d\n", history_count);//save history count to second
@@ -146,6 +149,7 @@ void saveHistory(){
   }
   fclose(fptr);
 }
+
 
 void loadHistory(){
   FILE *fptr;
