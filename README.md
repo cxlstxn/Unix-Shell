@@ -74,3 +74,5 @@ Exit
 
 ### To-do:
 - Start Stage 7. 
+- When input is > 511 anything after is treated as a new command, this should not happen and should print an error instead.
+-
