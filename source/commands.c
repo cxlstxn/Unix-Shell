@@ -48,8 +48,6 @@ void print_history(){
     printf("%d: %s\n", i+1, history_array[i]);
 
 }
-
-
 }
 
 // invoke_history: invokes a command from the history
@@ -242,7 +240,6 @@ void printAlias(){
   }
 }
 
-
 char* invokeAlias(char* tokenList[]) {
   for(int i = 0; i < 100; i++){
     if(alias_name[i] != NULL && strcmp(alias_name[i], tokenList[0]) == 0){
@@ -250,4 +247,15 @@ char* invokeAlias(char* tokenList[]) {
     }
   }
   return NULL;
+}
+
+void removeAlias(char* tokenList[]) {
+  for(int i = 0; i < 100; i++){
+    if(alias_name[i] != NULL && strcmp(alias_name[i], tokenList[1]) == 0){
+      alias_name[i] = NULL;
+      alias_command[i] = NULL;
+      return;
+    }
+  }
+  printf("Error: Alias not found\n");
 }

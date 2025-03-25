@@ -109,6 +109,15 @@ int main() {
         createAlias(tokenList);
       }
     }
+    else if (strcmp(tokenList[0], "unalias") == 0) {
+      if (tokenList[1] == NULL) {
+        printf("Error: Too few arguments. Usage unalias <name>\n");
+      } else if (tokenList[2] != NULL) {
+        printf("Error: Too many arguments. Usage unalias <name>\n");
+      } else {
+        removeAlias(tokenList);
+      }
+    }
 
     // exit function:
     else if (strcmp(tokenList[0], "exit") == 0) { //exit -> exit program
