@@ -57,7 +57,6 @@ int main() {
     if (newline){
       *newline = '\0'; // replacing newline from fgets() with null
     }
-    
 
     // check if history invokation - don't add to history:
     if(userinput[0] == '!'){
@@ -89,12 +88,26 @@ int main() {
 
     /* IF COMMAND IS BUILT-IN INVOKE APPROPRIATE FUNCTIONS: */
 
+    // alias function:
+    char* temp = invokeAlias(tokenList);
+    if (temp != NULL) {
+      tokenList[0] = temp;
+    }
+    
 
     if (feof(stdin)) { // ctrl+d -> exit program
       printf("\n");
       setenv("PATH", originalEnvPath, 1); // reset path to original
       saveHistory();
       break;
+    }
+
+    else if (strcmp(tokenList[0], "alias") == 0){
+      if (tokenList[1] == NULL) {
+        printAlias();
+      } else {
+        createAlias(tokenList);
+      }
     }
 
     // exit function:

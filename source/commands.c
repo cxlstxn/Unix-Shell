@@ -17,29 +17,8 @@
 char history_array[HISTORY_SIZE][512]; // store up to 20 commands of size 512 each
 int history_count = 0; // number of commands entered
 int history_next = 0; //stores next available position in array
-
-Alias* alias_array[10]; // alias array to hold 10 user aliases
-int num_aliases = 0;
-// define global max alias amount?
-
-void add_alias(char* alias_name, char* command_name){
-  if(num_aliases == 10){
-    printf("Error: Max number of aliases reached, remove one before adding another! \n");
-    break;
-  }
-  // loop through array and check there are no duplicate aliases
-  for(int i = 0; i<num_alises; i++){
-    if(alias_array[i]->original_name == *command_name){
-      // alias exists -> overwrite it with new alias_name:
-      printf("Alias alredy exists! Overwriting...\n");
-      alias_array[i]->new_name = alias_name; // set the old alias name to the new one
-      break;
-    }   
-  }
-  // alias doesn't already exist -> add it
-  //while(alias_array
-	   
-}
+char* alias_name[100]; // store up to 100 aliases
+char* alias_command[100]; // store up to 100 alias names
 
 // command is user inputted string 
 void add_to_history(char* command){
@@ -226,4 +205,49 @@ char* str_trim(char* str){
   }
   // return trimmed string
   return start;
+}
+
+void createAlias(char* tokenList[]) {
+  if(tokenList[1] == NULL){
+    printf("Error: Too few arguments. Usage alias <name> <command>\n");
+  }else if(tokenList[2] == NULL){
+    printf("Error: Too few arguments. Usage alias <name> <command>\n");
+  }else if(tokenList[3] != NULL){
+    printf("Error: Too many arguments. Usage alias <name> <command>\n");
+  }else{
+    // check if alias already exists
+    for(int i = 0; i < 100; i++){
+      if(alias_name[i] != NULL && strcmp(alias_name[i], tokenList[1]) == 0){
+        printf("Error: Alias already exists\n");
+        return;
+      }
+    }
+    // find first empty spot in alias_name
+    for(int i = 0; i < 100; i++){
+      if(alias_name[i] == NULL){
+        alias_name[i] = strdup(tokenList[1]);
+        alias_command[i] = strdup(tokenList[2]);
+        return;
+      }
+    }
+    printf("Error: Too many aliases\n");
+  }
+}
+
+void printAlias(){
+  for(int i = 0; i < 100; i++){
+    if(alias_name[i] != NULL){
+      printf("%s: %s\n", alias_name[i], alias_command[i]);
+    }
+  }
+}
+
+
+char* invokeAlias(char* tokenList[]) {
+  for(int i = 0; i < 100; i++){
+    if(alias_name[i] != NULL && strcmp(alias_name[i], tokenList[0]) == 0){
+      return alias_command[i];
+    }
+  }
+  return NULL;
 }
