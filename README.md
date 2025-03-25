@@ -73,6 +73,8 @@ Exit
 
 
 ### To-do:
-- Start Stage 7. 
+- Finish stage 7
+- Create alias needs to remove the overwritten alias from the list
+- Be able to accept commands with multiple params (e.g. "ls -Lf" currently not accepted)
+- Begin stage 8
 - When input is > 511 anything after is treated as a new command, this should not happen and should print an error instead.
--

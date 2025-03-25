@@ -17,8 +17,8 @@
 char history_array[HISTORY_SIZE][512]; // store up to 20 commands of size 512 each
 int history_count = 0; // number of commands entered
 int history_next = 0; //stores next available position in array
-char* alias_name[100]; // store up to 100 aliases
-char* alias_command[100]; // store up to 100 alias names
+char* alias_name[10]; // store up to 10 aliases
+char* alias_command[10]; // store up to 10 alias names
 
 // command is user inputted string 
 void add_to_history(char* command){
@@ -147,7 +147,7 @@ void saveHistory(){
   fclose(fptr);
 }
 
-
+// Load history in from the file
 void loadHistory(){
   FILE *fptr;
   char str[512];
@@ -167,7 +167,6 @@ void loadHistory(){
   fclose(fptr);
 }
 
-//chuck into array -> loop through array checking -- POTENTIAL HARD
 
 // external commands:
 void externalcommand(char* tokenList[]) {
@@ -188,6 +187,7 @@ void externalcommand(char* tokenList[]) {
         }
 }
 
+
 char* str_trim(char* str){
   if(str == NULL){
     return str;
@@ -205,7 +205,9 @@ char* str_trim(char* str){
   return start;
 }
 
+// create an alias and bind it with the command:
 void createAlias(char* tokenList[]) {
+  // Need way to be able to accomodate commands such as: ls -LF -  currently fails
   if(tokenList[1] == NULL){
     printf("Error: Too few arguments. Usage alias <name> <command>\n");
   }else if(tokenList[2] == NULL){
@@ -213,15 +215,15 @@ void createAlias(char* tokenList[]) {
   }else if(tokenList[3] != NULL){
     printf("Error: Too many arguments. Usage alias <name> <command>\n");
   }else{
-    // check if alias already exists
-    for(int i = 0; i < 100; i++){
+    // check if alias already exists:
+    for(int i = 0; i < 10; i++){
       if(alias_name[i] != NULL && strcmp(alias_name[i], tokenList[1]) == 0){
-        printf("Error: Alias already exists\n");
-        return;
-      }
+	printf("Overwriting alias\n");
+	}
+      // NEEDS TO REMOVE THE OLD ALIAS FROM THE LIST - use removeAlias()
     }
-    // find first empty spot in alias_name
-    for(int i = 0; i < 100; i++){
+    // find first empty spot in alias_name - order of alias doesn't matter:
+    for(int i = 0; i < 10; i++){
       if(alias_name[i] == NULL){
         alias_name[i] = strdup(tokenList[1]);
         alias_command[i] = strdup(tokenList[2]);
@@ -232,16 +234,33 @@ void createAlias(char* tokenList[]) {
   }
 }
 
+// same alias name should overwrite -> not error
+
+
+
+// print alias list -> no alias, error:
 void printAlias(){
-  for(int i = 0; i < 100; i++){
+  int c = 0;
+  for(int i = 0; i < 10; i ++){
+    if(alias_name[i] == NULL){
+      c++;
+    }
+    // if all elements are null -> empty:
+    if(c == 10){
+      printf("Error: No alias exist!\n");
+      break;
+    }
+  }
+  for(int i = 0; i < 10; i++){
     if(alias_name[i] != NULL){
       printf("%s: %s\n", alias_name[i], alias_command[i]);
     }
   }
 }
 
-char* invokeAlias(char* tokenList[]) {
-  for(int i = 0; i < 100; i++){
+// invoke the alias the user requests
+char* invokeAlias(char* tokenList[]){
+  for(int i = 0; i < 10; i++){
     if(alias_name[i] != NULL && strcmp(alias_name[i], tokenList[0]) == 0){
       return alias_command[i];
     }
@@ -249,8 +268,9 @@ char* invokeAlias(char* tokenList[]) {
   return NULL;
 }
 
-void removeAlias(char* tokenList[]) {
-  for(int i = 0; i < 100; i++){
+// Remove an alias from our alias list:
+void removeAlias(char* tokenList[]){
+  for(int i = 0; i < 10; i++){
     if(alias_name[i] != NULL && strcmp(alias_name[i], tokenList[1]) == 0){
       alias_name[i] = NULL;
       alias_command[i] = NULL;
