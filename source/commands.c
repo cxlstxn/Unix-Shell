@@ -261,7 +261,7 @@ char* invokeAlias(char* tokenList[]) {
       }
 
       recursion_depth++;
-      char* resolved_command = alias_command[i];
+      char* resolved_command = strdup(alias_command[i]); // Duplicate to avoid modifying the original alias_command
       char* tokenized_command[512];
       int j = 0;
 
@@ -277,11 +277,11 @@ char* invokeAlias(char* tokenList[]) {
       char* recursive_result = invokeAlias(tokenized_command);
       recursion_depth--;
 
+      free(resolved_command); // Free the duplicated string
       return recursive_result != NULL ? recursive_result : alias_command[i];
     }
   }
-
-  return tokenList[0]; // Return the original command if no alias is found
+  return NULL; // No alias found
 }
 
 void removeAlias(char* tokenList[]) {

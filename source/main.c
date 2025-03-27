@@ -79,18 +79,16 @@ int main() {
     
     char* tokenList[100];
     int token_count = 0;
-
-    // Tokenize user input
-    char* token = strtok(userinput, " <\t|>&;");
+    char* token = strtok(userinput, " < \t | > & ;"); // tokens to look for
     while (token != NULL) {
-      char *newline = strchr(token, '\n');
+      char *newline = strchr(token, '\n'); // searching for '\n'
       if (newline) {
-        *newline = '\0'; // Replace newline with null terminator
+	      *newline = '\0'; // setting NULL position
       }
       tokenList[token_count++] = token;
-      token = strtok(NULL, " <\t|>&;");
+      token = strtok(NULL, " < \t | > & ;");
     }
-    tokenList[token_count] = NULL; // Null-terminate the token list
+    tokenList[token_count++] = NULL; //last has to be null for execvp to work
 
     /* IF COMMAND IS BUILT-IN INVOKE APPROPRIATE FUNCTIONS: */
 
@@ -98,18 +96,32 @@ int main() {
     
     // invoking and retokenizing the alias command:
     char* temp = invokeAlias(tokenList);
+
     if (temp != NULL) {
+      if (strcmp(temp, "") == 0) {
+        continue;
+      }
+      // Append unused arguments to the alias
+      char appendedCommand[512];
+      strcpy(appendedCommand, temp);
+
+      for (int i = 1; tokenList[i] != NULL; i++) {
+        strcat(appendedCommand, " ");
+        strcat(appendedCommand, tokenList[i]);
+      }
+      temp = strdup(appendedCommand); // Update temp with the appended command
       token_count = 0;
       token = strtok(temp, " < \t | > & ;");
       while (token != NULL) {
       char *newline = strchr(token, '\n');
       if (newline) {
-        *newline = '\0'; // Replace newline with null terminator
+        *newline = '\0';
       }
       tokenList[token_count++] = token;
-      token = strtok(NULL, " <\t|>&;");
+      token = strtok(NULL, " < \t | > & ;");
+      }
+      tokenList[token_count++] = NULL;
     }
-    tokenList[token_count] = NULL; // Null-terminate the token list
 
     if (feof(stdin)) { // ctrl+d -> exit program
       printf("\n");
