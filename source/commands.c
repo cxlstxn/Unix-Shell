@@ -251,12 +251,37 @@ void printAlias(){
 }
 
 char* invokeAlias(char* tokenList[]) {
-  for(int i = 0; i < 10; i++){
-    if(alias_name[i] != NULL && strcmp(alias_name[i], tokenList[0]) == 0){
-      return alias_command[i];
+  static int recursion_depth = 0;
+
+  for (int i = 0; i < 10; i++) {
+    if (alias_name[i] != NULL && strcmp(alias_name[i], tokenList[0]) == 0) {
+      if (recursion_depth >= 3) {
+        printf("Error: Alias recursion limit exceeded\n");
+        return "\0";
+      }
+
+      recursion_depth++;
+      char* resolved_command = alias_command[i];
+      char* tokenized_command[512];
+      int j = 0;
+
+      // Tokenize the resolved command
+      char* token = strtok(resolved_command, " ");
+      while (token != NULL) {
+        tokenized_command[j++] = token;
+        token = strtok(NULL, " ");
+      }
+      tokenized_command[j] = NULL;
+
+      // Recursively resolve aliases
+      char* recursive_result = invokeAlias(tokenized_command);
+      recursion_depth--;
+
+      return recursive_result != NULL ? recursive_result : alias_command[i];
     }
   }
-  return NULL;
+
+  return tokenList[0]; // Return the original command if no alias is found
 }
 
 void removeAlias(char* tokenList[]) {

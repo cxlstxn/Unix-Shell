@@ -79,36 +79,37 @@ int main() {
     
     char* tokenList[100];
     int token_count = 0;
-    char* token = strtok(userinput, " < \t | > & ;"); // tokens to look for
+
+    // Tokenize user input
+    char* token = strtok(userinput, " <\t|>&;");
     while (token != NULL) {
-      char *newline = strchr(token, '\n'); // searching for '\n'
-      if (newline) {
-	      *newline = '\0'; // setting NULL position
-      }
-      tokenList[token_count++] = token;
-      token = strtok(NULL, " < \t | > & ;");
-    }
-    tokenList[token_count++] = NULL; //last has to be null for execvp to work
-
-    /* IF COMMAND IS BUILT-IN INVOKE APPROPRIATE FUNCTIONS: */
-
-    // alias function:
-    
-    // invoking and retokenizing the alias command:
-    char* temp = invokeAlias(tokenList);
-    if (temp != NULL) {
-      token_count = 0;
-      token = strtok(temp, " < \t | > & ;");
-      while (token != NULL) {
       char *newline = strchr(token, '\n');
       if (newline) {
-        *newline = '\0';
+        *newline = '\0'; // Replace newline with null terminator
       }
       tokenList[token_count++] = token;
-      token = strtok(NULL, " < \t | > & ;");
-      }
-      tokenList[token_count++] = NULL;
+      token = strtok(NULL, " <\t|>&;");
     }
+    tokenList[token_count] = NULL; // Null-terminate the token list
+
+    /* Handle alias invocation and retokenize if necessary */
+    char* aliasResult = invokeAlias(tokenList);
+    if (aliasResult == NULL || strcmp(aliasResult, "") == 0) {
+      continue; // Skip processing if alias invocation fails
+    }
+
+    // Retokenize the alias result
+    token_count = 0;
+    token = strtok(aliasResult, " <\t|>&;");
+    while (token != NULL) {
+      char *newline = strchr(token, '\n');
+      if (newline) {
+        *newline = '\0'; // Replace newline with null terminator
+      }
+      tokenList[token_count++] = token;
+      token = strtok(NULL, " <\t|>&;");
+    }
+    tokenList[token_count] = NULL; // Null-terminate the token list
 
     if (feof(stdin)) { // ctrl+d -> exit program
       printf("\n");
