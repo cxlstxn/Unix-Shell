@@ -92,16 +92,16 @@ int main() {
     }
     tokenList[token_count] = NULL; // Null-terminate the token list
 
-    /* Handle alias invocation and retokenize if necessary */
-    char* aliasResult = invokeAlias(tokenList);
-    if (aliasResult == NULL || strcmp(aliasResult, "") == 0) {
-      continue; // Skip processing if alias invocation fails
-    }
+    /* IF COMMAND IS BUILT-IN INVOKE APPROPRIATE FUNCTIONS: */
 
-    // Retokenize the alias result
-    token_count = 0;
-    token = strtok(aliasResult, " <\t|>&;");
-    while (token != NULL) {
+    // alias function:
+    
+    // invoking and retokenizing the alias command:
+    char* temp = invokeAlias(tokenList);
+    if (temp != NULL) {
+      token_count = 0;
+      token = strtok(temp, " < \t | > & ;");
+      while (token != NULL) {
       char *newline = strchr(token, '\n');
       if (newline) {
         *newline = '\0'; // Replace newline with null terminator
