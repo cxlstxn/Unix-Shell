@@ -17,6 +17,8 @@ void createAlias(char* tokenList[]);
 void printAlias();
 char* invokeAlias(char* tokenList[]);
 void removeAlias(char* tokenList[]);
+void saveAlias();
+void loadAlias();
 
 // History Functions:
 void add_to_history(char*command);

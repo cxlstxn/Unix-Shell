@@ -21,17 +21,20 @@ char* alias_name[10]; // store up to 10 aliases
 char* alias_command[10]; // store up to 10 alias names
 
 // command is user inputted string 
-void add_to_history(char* command){
-   
-  // stores command into next avavailable position in history_array, leave space for null terminator:
-  strncpy(history_array[history_next], command, sizeof(history_array[history_next]) - 1); // copies 511 bytes, 1 for null  
+void add_to_history(char* command) {
+  // Shift all commands up by one
+  for (int i = HISTORY_SIZE - 1; i > 0; i--) {
+    strncpy(history_array[i], history_array[i - 1], sizeof(history_array[i]) - 1);
+    history_array[i][sizeof(history_array[i]) - 1] = '\0'; 
+  }
 
-  // manually add null terminator:
-  history_array[history_next][sizeof(history_array[history_next]) - 1 ] = '\0'; // manually adding in null terminator 
+  // Add the new command to the first position
+  strncpy(history_array[0], command, sizeof(history_array[0]) - 1);
+  history_array[0][sizeof(history_array[0]) - 1] = '\0'; 
 
-  history_next = (history_next + 1) % HISTORY_SIZE;  // Circular buffer
-  if(history_count < HISTORY_SIZE){
-    history_count ++;
+  // Update history count
+  if (history_count < HISTORY_SIZE) {
+    history_count++;
   }
 }
 
@@ -265,4 +268,39 @@ void removeAlias(char* tokenList[]) {
     }
   }
   printf("Error: Alias not found\n");
+}
+
+
+void saveAlias(){
+  FILE *fptr;
+  chdir(getenv("HOME"));
+  fptr = fopen(".aliases", "w"); 
+  if (fptr == NULL){
+    printf("Error: Failure saving aliases!\n"); // perror
+  }
+  for(int i = 0; i < 10; i++){
+    if(alias_name[i] != NULL){
+      fprintf(fptr, "%s %s\n", alias_name[i], alias_command[i]);
+    }
+  }
+  fclose(fptr);
+}
+
+void loadAlias(){
+  FILE *fptr;
+  char str[512];
+  fptr = fopen(".aliases", "r");
+  if (fptr == NULL){
+    perror("Could not open alias file\n");
+  }
+  for (int i = 0; i < 10; i++) {
+    if (fgets(str, sizeof(str), fptr) != NULL) {
+      str[strcspn(str, "\n")] = '\0';  // Remove newline
+      char* name = strtok(str, " ");
+      char* command = strtok(NULL, "\n");
+      alias_name[i] = strdup(name);
+      alias_command[i] = strdup(command);
+    }
+  }
+  fclose(fptr);
 }

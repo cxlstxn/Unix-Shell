@@ -19,6 +19,10 @@ int main() {
   if (access(".hist_list", F_OK) == 0) { // file exists
     loadHistory();
   }
+
+  if (access(".aliases", F_OK) == 0) { // file exists
+    loadAlias();
+  }
   
   /* DO WHILE SHELL HAS NOT TERMINATED: */
 
@@ -110,6 +114,7 @@ int main() {
       printf("\n");
       setenv("PATH", originalEnvPath, 1); // reset path to original
       saveHistory();
+      saveAlias();
       break;
     }
 
@@ -137,6 +142,7 @@ int main() {
       // tokenList[0] contains the first argument - 'exit'
       setenv("PATH", originalEnvPath, 1); // reset path
       saveHistory();
+      saveAlias();
       break;
     } else{
 	    printf("Error: Too many arguments. Usage exit\n");
