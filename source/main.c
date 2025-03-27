@@ -72,7 +72,7 @@ int main() {
      if(userinput[0] == '\n'){
       continue;
     }
-      
+    
     char* tokenList[100];
     int token_count = 0;
     char* token = strtok(userinput, " < \t | > & ;"); // tokens to look for
@@ -89,11 +89,22 @@ int main() {
     /* IF COMMAND IS BUILT-IN INVOKE APPROPRIATE FUNCTIONS: */
 
     // alias function:
+    
+    // invoking and retokenizing the alias command:
     char* temp = invokeAlias(tokenList);
     if (temp != NULL) {
-      tokenList[0] = temp;
+      token_count = 0;
+      token = strtok(temp, " < \t | > & ;");
+      while (token != NULL) {
+      char *newline = strchr(token, '\n');
+      if (newline) {
+        *newline = '\0';
+      }
+      tokenList[token_count++] = token;
+      token = strtok(NULL, " < \t | > & ;");
+      }
+      tokenList[token_count++] = NULL;
     }
-    
 
     if (feof(stdin)) { // ctrl+d -> exit program
       printf("\n");
@@ -109,6 +120,7 @@ int main() {
         createAlias(tokenList);
       }
     }
+    
     else if (strcmp(tokenList[0], "unalias") == 0) {
       if (tokenList[1] == NULL) {
         printf("Error: Too few arguments. Usage unalias <name>\n");
