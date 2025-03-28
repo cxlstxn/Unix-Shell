@@ -52,7 +52,6 @@ void print_history(){
 
 }
 }
-
 // invoke_history: invokes a command from the history
 char* invoke_history(char* userinput){
 
@@ -62,7 +61,7 @@ char* invoke_history(char* userinput){
       printf("Error: No commands in history\n");
       return "\n";
     }
-    return history_array[(history_next - 1 + HISTORY_SIZE) % HISTORY_SIZE];
+    return history_array[0]; // Most recent command is at index 0
   }
 
   // if userinput is a history command:
@@ -85,7 +84,7 @@ char* invoke_history(char* userinput){
       printf("Error: Command not in history\n");
       return "\n";
     } else {
-      return history_array[command_index - 1];
+      return history_array[history_count - command_index];
     }
   }
   // else 
