@@ -106,11 +106,13 @@ void getpath(char* tokenList[]) {
 // setpath function: Sets new PATH:
 void setpath(char* tokenList[]) {
   if(tokenList[1] == NULL){
+
       // lead with what caused error:
-	printf("Error: Too few arguments. Usage setpath <pathname>\n");
+	    printf("Error: Too few arguments. Usage setpath <pathname>\n");
     } 
       else if(tokenList[2] != NULL){
-	printf("Error: Too many arguments. Usage setpath <pathname>\n"); // printing success - confused
+
+	      printf("Error: Too many arguments. Usage setpath <pathname>\n"); // printing success - confused
       }
       else{
         setenv("PATH", tokenList[1], 1);
@@ -126,7 +128,7 @@ void cd(char* tokenList[]) {
     chdir(getenv("HOME"));
   }else if (tokenList[2] != NULL) {
       // Too many args
-	printf("Error: Too many arguments. Usage cd directory\n");
+      printf("Error: Too many arguments. Usage cd directory\n");
   }else if(chdir(tokenList[1]) != 0){
   // Assignemnt failed
 	perror(tokenList[1]);
@@ -139,7 +141,7 @@ void saveHistory(){
   chdir(getenv("HOME"));
   fptr = fopen(".hist_list", "w"); 
   if (fptr == NULL){
-    printf("Error: Failure saving History!\n"); // perror
+    printf("Error: Failure saving History!\n"); 
   }
   fprintf(fptr, "%d\n", history_next); //save history next to first line
   fprintf(fptr, "%d\n", history_count);//save history count to second
@@ -155,7 +157,7 @@ void loadHistory(){
   char str[512];
   fptr = fopen(".hist_list", "r");
   if (fptr == NULL){
-    perror("Could not open history file\n");
+    printf("Could not open history file\n");
   }
   fscanf(fptr, "%d\n", &history_next);//load history next from first line
   fscanf(fptr, "%d\n", &history_count);// load history count from second line
@@ -260,27 +262,47 @@ char* invokeAlias(char* tokenList[]) {
       }
 
       recursion_depth++;
-      char* resolved_command = strdup(alias_command[i]); // Duplicate to avoid modifying the original alias_command
+      char* cmmd = strdup(alias_command[i]); // Duplicate to avoid modifying the original alias_command
       char* tokenized_command[512];
       int j = 0;
 
-      // Tokenize the resolved command
-      char* token = strtok(resolved_command, " ");
+      // Tokenize the command
+      char* token = strtok(cmmd, " ");
       while (token != NULL) {
         tokenized_command[j++] = token;
         token = strtok(NULL, " ");
       }
       tokenized_command[j] = NULL;
 
-      // Recursively resolve aliases
+      // Check if the alias is a history invocation
+      if (strcmp(tokenized_command[0], "!!") == 0 || (tokenized_command[0][0] == '!' && strlen(tokenized_command[0]) > 1)) {
+        char* history_command = invoke_history(tokenized_command[0]);
+        if (strcmp(history_command, "\n") != 0) {
+          // Tokenize
+          char* history_tokenized_command[512];
+          int k = 0;
+          char* token = strtok(history_command, " ");
+          while (token != NULL) {
+        history_tokenized_command[k++] = token;
+        token = strtok(NULL, " ");
+          }
+          history_tokenized_command[k] = NULL;
+
+          char* recursive_result = invokeAlias(history_tokenized_command);
+          recursion_depth--;
+          free(cmmd);
+          return recursive_result != NULL ? recursive_result : history_command;
+        }
+      }
+
+      // Recursively go through aliases
       char* recursive_result = invokeAlias(tokenized_command);
       recursion_depth--;
-
-      free(resolved_command); // Free the duplicated string
+      free(cmmd);
       return recursive_result != NULL ? recursive_result : alias_command[i];
     }
   }
-  return NULL; // No alias found
+  return NULL; // no alias
 }
 
 void removeAlias(char* tokenList[]) {
@@ -315,7 +337,7 @@ void loadAlias(){
   char str[512];
   fptr = fopen(".aliases", "r");
   if (fptr == NULL){
-    perror("Could not open alias file\n");
+    printf("Could not open alias file\n");
   }
   for (int i = 0; i < 10; i++) {
     if (fgets(str, sizeof(str), fptr) != NULL) {
@@ -327,4 +349,30 @@ void loadAlias(){
     }
   }
   fclose(fptr);
+}
+
+void clearAlias(){
+  for(int i = 0; i < 10; i++){
+    alias_name[i] = NULL;
+    alias_command[i] = NULL;
+  }
+  // Delete the alias file if it exists
+  chdir(getenv("HOME"));
+  if (access(".aliases", F_OK) == 0) {
+    remove(".aliases");
+  }
+}
+
+void clearHistory(){
+  for(int i = 0; i < HISTORY_SIZE; i++){
+    history_array[i][0] = '\0'; // clear all history
+  }
+  history_count = 0;
+  history_next = 0;
+
+  // Delete the history file if it exists
+  chdir(getenv("HOME"));
+  if (access(".hist_list", F_OK) == 0) {
+    remove(".hist_list");
+  }
 }

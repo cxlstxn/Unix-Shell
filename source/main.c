@@ -33,7 +33,7 @@ int main() {
     char cwd[1024]; // Creates buffer
     // get working directory and save it to cwd
     if((getcwd(cwd, sizeof(cwd))) == NULL){
-      perror("Failure getting current working directory\n"); // Failure
+      printf("Failure getting current working directory\n"); // Failure
       return 1;
     }
 
@@ -62,21 +62,7 @@ int main() {
       *newline = '\0'; // replacing newline from fgets() with null
     }
 
-    // check if history invokation - don't add to history:
-    if(userinput[0] == '!'){
-      // set userinput to returned string:
-      strcpy(userinput, invoke_history(userinput)); // change userinput to the history command that is associated with the input
-      //break;
-    }else{
-     //Add user input to history:
-      add_to_history(originalinput);
-    }
 
-    // To ensure we don't hit external commands with '\n'
-     if(userinput[0] == '\n'){
-      continue;
-    }
-    
     char* tokenList[100];
     int token_count = 0;
     char* token = strtok(userinput, " < \t | > & ;"); // tokens to look for
@@ -90,6 +76,7 @@ int main() {
     }
     tokenList[token_count++] = NULL; //last has to be null for execvp to work
 
+
     /* IF COMMAND IS BUILT-IN INVOKE APPROPRIATE FUNCTIONS: */
 
     // alias function:
@@ -101,7 +88,7 @@ int main() {
       if (strcmp(temp, "") == 0) {
         continue;
       }
-      // Append unused arguments to the alias
+
       char appendedCommand[512];
       strcpy(appendedCommand, temp);
 
@@ -109,7 +96,7 @@ int main() {
         strcat(appendedCommand, " ");
         strcat(appendedCommand, tokenList[i]);
       }
-      temp = strdup(appendedCommand); // Update temp with the appended command
+      temp = strdup(appendedCommand); 
       token_count = 0;
       token = strtok(temp, " < \t | > & ;");
       while (token != NULL) {
@@ -123,12 +110,47 @@ int main() {
       tokenList[token_count++] = NULL;
     }
 
+
+    if(tokenList[0][0] == '!' ){
+      strcpy(tokenList[0], invoke_history(tokenList[0])); 
+      str_trim(tokenList[0]);
+      //break;
+    }else{
+     //Add user input to history:
+      char commandString[512] = "";
+      for (int i = 0; tokenList[i] != NULL; i++) {
+        strcat(commandString, tokenList[i]);
+        if (tokenList[i + 1] != NULL) {
+          strcat(commandString, " ");
+        }
+      }
+      add_to_history(commandString);
+    }
+
+    // To ensure we don't hit external commands with '\n'
+    if (strcmp(tokenList[0], "\n") == 0) {
+      continue;
+    }
+
     if (feof(stdin)) { // ctrl+d -> exit program
       printf("\n");
       setenv("PATH", originalEnvPath, 1); // reset path to original
       saveHistory();
       saveAlias();
       break;
+    }
+
+    else if (strcmp(tokenList[0], "clear") == 0){
+      if (tokenList[1] == NULL) {
+        clearHistory();
+        clearAlias();
+      } else if (strcmp(tokenList[1], "history") == 0) {
+        clearHistory();
+      } else if (strcmp(tokenList[1], "alias") == 0) {
+        clearAlias();
+      } else {
+        printf("Error: Invalid argument. Usage: clear history OR alias\n");
+      }
     }
 
     else if (strcmp(tokenList[0], "alias") == 0){

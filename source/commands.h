@@ -32,4 +32,9 @@ void saveHistory();
 void loadHistory();
 
 
+// Clear Functions:
+void clearAlias();
+void clearHistory();
+
+
 #endif
