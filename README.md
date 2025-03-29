@@ -35,7 +35,23 @@
   - ```history``` - Returns a list of up to 20 of the last commands. 
 
 ### Stage 6:
-- Implemented saving history, On start the shell loads history from a file. 
+- Implemented saving history, on start the shell loads history from a file.
+
+### Stage 7:
+- Implemented aliases (ability to rename commands to simpler ones):
+  - ```alias name command``` - can use ```name``` instead of ```command```
+  - ```unalias name``` - removes ```name``` and its bounded command from the list of aliases
+  - ```alias``` - show list of all alises on the system
+
+### Stage 8:
+- Implemented saving aliases:
+  - Aliases saved to a ```.aliases``` file
+  - File is loaded in at the start and saved at the end
+- Ability to wipe history and/or aliases lists
+
+
+### Stage 9:
+
 
 
 ## Overview:
@@ -73,8 +89,18 @@ Exit
 
 
 ### To-do:
-- Finish stage 7
-- Create alias needs to remove the overwritten alias from the list
-- Be able to accept commands with multiple params (e.g. "ls -Lf" currently not accepted)
-- Begin stage 8
+- Fix all problems for **Monday night** at the latest
 - When input is > 511 anything after is treated as a new command, this should not happen and should print an error instead.
+- Tidy code and comment it
+
+### Problems:
+- Stage 1 tokenizing test fails (executes multiple commands)
+- ```setpath \bin``` fails (waiting for Andrew's response)
+- History invokations not working properly:
+  - ```ls -lF``` works but calling it using ```!!``` doesn't
+  - ```!! 5``` works but shouldn't (incorrect parameters)
+  - ```!-7 gh``` works but shouldn't (incorrect paramters)#
+  - Stage 6 and 8 not properly tested removing the ```.hist_list``` and ```.aliases``` files
+- Overriding aliases (waiting for Andrew's response)
+- Can't invoke aliases through history
+- Command, **not** alias being executed through history view

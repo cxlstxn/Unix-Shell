@@ -20,6 +20,7 @@ int main() {
     loadHistory();
   }
 
+  /* LOAD ALISASES:  */
   if (access(".aliases", F_OK) == 0) { // file exists
     loadAlias();
   }
@@ -135,19 +136,23 @@ int main() {
     if (feof(stdin)) { // ctrl+d -> exit program
       printf("\n");
       setenv("PATH", originalEnvPath, 1); // reset path to original
+
+      /* SAVE HISTORY: */
       saveHistory();
+
+      /* SAVE ALIASES: */
       saveAlias();
       break;
     }
 
-    else if (strcmp(tokenList[0], "clear") == 0){
+    else if (strcmp(tokenList[0], "wipe") == 0){
       if (tokenList[1] == NULL) {
         clearHistory();
         clearAlias();
       } else if (strcmp(tokenList[1], "history") == 0) {
         clearHistory();
       } else if (strcmp(tokenList[1], "alias") == 0) {
-        clearAlias();
+	clearAlias(); 
       } else {
         printf("Error: Invalid argument. Usage: clear history OR alias\n");
       }
@@ -175,6 +180,8 @@ int main() {
     else if (strcmp(tokenList[0], "exit") == 0) { //exit -> exit program
       if(tokenList[1] == NULL){
       // tokenList[0] contains the first argument - 'exit'
+
+	/* RESTORE ORIGINAL PATH */
       setenv("PATH", originalEnvPath, 1); // reset path
       saveHistory();
       saveAlias();

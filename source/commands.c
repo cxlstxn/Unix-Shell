@@ -49,9 +49,10 @@ void print_history(){
     //int index = (history_next - 1 - i + HISTORY_SIZE) % HISTORY_SIZE;
     //printf("%d: %s\n", i+1, history_array[index]);
     printf("%d: %s\n", i+1, history_array[i]);
+  }
+}
 
-}
-}
+
 // invoke_history: invokes a command from the history
 char* invoke_history(char* userinput){
 
@@ -128,7 +129,7 @@ void cd(char* tokenList[]) {
     chdir(getenv("HOME"));
   }else if (tokenList[2] != NULL) {
       // Too many args
-      printf("Error: Too many arguments. Usage cd directory\n");
+      printf("Error: Too many arguments. Usage cd <directory>\n");
   }else if(chdir(tokenList[1]) != 0){
   // Assignemnt failed
 	perror(tokenList[1]);
@@ -208,6 +209,8 @@ char* str_trim(char* str){
   // return trimmed string
   return start;
 }
+
+// bind alias with the actual command:
 void createAlias(char* tokenList[]) {
   if(tokenList[1] == NULL){
     printf("Error: Too few arguments. Usage alias <name> <command>\n");
@@ -227,6 +230,7 @@ void createAlias(char* tokenList[]) {
     for(int i = 0; i < 10; i++){
       if(alias_name[i] != NULL && strcmp(alias_name[i], tokenList[1]) == 0){
         removeAlias(tokenList);
+	printf("Previous alias has been overwritten\n");
       }
     }
 
@@ -242,14 +246,21 @@ void createAlias(char* tokenList[]) {
   }
 }
 
-
+// Print out the list of all aliases on system
 void printAlias(){
+  int c = 0;
   for(int i = 0; i < 10; i++){
     if(alias_name[i] != NULL){
       printf("%s: %s\n", alias_name[i], alias_command[i]);
+    }else{
+      c ++;
     }
   }
+  if(c == 10){
+    printf("Error: No aliases exist!\n");
+  }
 }
+
 
 char* invokeAlias(char* tokenList[]) {
   static int recursion_depth = 0;
@@ -304,6 +315,7 @@ char* invokeAlias(char* tokenList[]) {
   }
   return NULL; // no alias
 }
+
 
 void removeAlias(char* tokenList[]) {
   for(int i = 0; i < 10; i++){
@@ -369,7 +381,6 @@ void clearHistory(){
   }
   history_count = 0;
   history_next = 0;
-
   // Delete the history file if it exists
   chdir(getenv("HOME"));
   if (access(".hist_list", F_OK) == 0) {
