@@ -83,6 +83,42 @@ int main() {
     // alias function:
     
     // invoking and retokenizing the alias command:
+
+
+    if(tokenList[0][0] == '!' ){
+      char* historyCommand = invoke_history(tokenList[0]);
+      if (strcmp(historyCommand, "\n") == 0) {
+        continue;
+      }
+      if (historyCommand != NULL) {
+        token_count = 0;
+        token = strtok(historyCommand, " < \t | > & ;");
+        while (token != NULL) {
+          char *newline = strchr(token, '\n');
+          if (newline) {
+        *newline = '\0';
+          }
+          tokenList[token_count++] = token;
+          token = strtok(NULL, " < \t | > & ;");
+        }
+        tokenList[token_count++] = NULL;    
+      } else {
+        printf("Error: Invalid history command\n");
+        continue;
+      }
+      //break;
+    }else{
+     //Add user input to history:
+      char commandString[512] = "";
+      for (int i = 0; tokenList[i] != NULL; i++) {
+        strcat(commandString, tokenList[i]);
+        if (tokenList[i + 1] != NULL) {
+          strcat(commandString, " ");
+        }
+      }
+      add_to_history(commandString);
+    }
+
     char* temp = invokeAlias(tokenList);
 
     if (temp != NULL) {
@@ -110,24 +146,7 @@ int main() {
       }
       tokenList[token_count++] = NULL;
     }
-
-
-    if(tokenList[0][0] == '!' ){
-      strcpy(tokenList[0], invoke_history(tokenList[0])); 
-      str_trim(tokenList[0]);
-      //break;
-    }else{
-     //Add user input to history:
-      char commandString[512] = "";
-      for (int i = 0; tokenList[i] != NULL; i++) {
-        strcat(commandString, tokenList[i]);
-        if (tokenList[i + 1] != NULL) {
-          strcat(commandString, " ");
-        }
-      }
-      add_to_history(commandString);
-    }
-
+    
     // To ensure we don't hit external commands with '\n'
     if (strcmp(tokenList[0], "\n") == 0) {
       continue;
@@ -152,8 +171,8 @@ int main() {
       } else if (strcmp(tokenList[1], "history") == 0) {
         clearHistory();
       } else if (strcmp(tokenList[1], "alias") == 0) {
-	clearAlias(); 
-      } else {
+	      clearAlias(); 
+      } else {  
         printf("Error: Invalid argument. Usage: clear history OR alias\n");
       }
     }

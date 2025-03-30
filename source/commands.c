@@ -80,12 +80,13 @@ char* invoke_history(char* userinput){
 
   // less than zero - get command from end of history
   if(command_index < 0){
-    command_index = history_count + command_index + 1;
+    command_index = history_count + command_index ;
+
     if (command_index < 1){
       printf("Error: Command not in history\n");
       return "\n";
     } else {
-      return history_array[history_count - command_index];
+      return history_array[command_index-1];
     }
   }
   // else 
