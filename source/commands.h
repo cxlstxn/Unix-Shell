@@ -1,4 +1,4 @@
-// shell.h
+    // shell.h
 #ifndef COMMANDS_H // avoids redefinition errors
 #define COMMANDS_H
 
@@ -19,13 +19,13 @@ char* invokeAlias(char* tokenList[]);
 void removeAlias(char* tokenList[]);
 void saveAlias();
 void loadAlias();
+char** processAlias(char** tokenList);
+
 
 // History Functions:
 void add_to_history(char*command);
 void print_history();
-char* invoke_history(char* userinput);
-
-
+char* invoke_history(char* tokenList[]);
 void add_to_history(char*command);
 void print_history();
 void saveHistory();

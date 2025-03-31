@@ -89,18 +89,4 @@ Exit
 
 
 ### To-do:
-- Fix all problems for **Monday night** at the latest
-- When input is > 511 anything after is treated as a new command, this should not happen and should print an error instead.
 - Tidy code and comment it
-
-### Problems:
-- Stage 1 tokenizing test fails (executes multiple commands)
-- ```setpath \bin``` fails (waiting for Andrew's response)
-- History invokations not working properly:
-  - ```ls -lF``` works but calling it using ```!!``` doesn't
-  - ```!! 5``` works but shouldn't (incorrect parameters)
-  - ```!-7 gh``` works but shouldn't (incorrect paramters)#
-  - Stage 6 and 8 not properly tested removing the ```.hist_list``` and ```.aliases``` files
-- Overriding aliases (waiting for Andrew's response)
-- Can't invoke aliases through history
-- Command, **not** alias being executed through history view
