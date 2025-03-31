@@ -51,9 +51,11 @@
 
 
 ### Stage 9:
+- Enhanced aliases
+- aliases of aliases can now be called. 
+- with a limit of 3 recursive calls as to stop infinite loops
 
-
-
+s
 ## Overview:
 
 ```
@@ -85,8 +87,3 @@ Exit
 ./shell
 ```
 - to run the shell. 
-
-
-
-### To-do:
-- Tidy code and comment it
