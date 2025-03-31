@@ -55,7 +55,6 @@
 - aliases of aliases can now be called. 
 - with a limit of 3 recursive calls as to stop infinite loops
 
-s
 ## Overview:
 
 ```

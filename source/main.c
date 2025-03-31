@@ -5,7 +5,6 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-
 #include "commands.h"
 
 int main() {
@@ -45,6 +44,13 @@ int main() {
 
     /* READ AND PARSE USER INPUT: */
     if (fgets(userinput, sizeof(userinput), stdin) == NULL) { // getting user input
+      if (feof(stdin)) { // check if EOF (Ctrl+D) 
+        printf("\n");
+        setenv("PATH", originalEnvPath, 1); // reset path to original
+        saveHistory();
+        saveAlias();
+        break; // exit the shell
+      }
         printf("Error reading input\n");
         continue;
     }
@@ -59,6 +65,7 @@ int main() {
     if(userinput[0] == '\n'){
       continue;
     }
+
 
     // prepare userinput for adding to history:
     char originalinput[512];
@@ -146,18 +153,6 @@ int main() {
     // To ensure we don't hit external commands with '\n'
     if (strcmp(tokenList[0], "\n") == 0) {
       continue;
-    }
-
-    if (feof(stdin)) { // ctrl+d -> exit program
-      printf("\n");
-      setenv("PATH", originalEnvPath, 1); // reset path to original
-
-      /* SAVE HISTORY: */
-      saveHistory();
-
-      /* SAVE ALIASES: */
-      saveAlias();
-      break;
     }
 
     // simple wipe command to clear history and aliases
