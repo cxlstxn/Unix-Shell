@@ -94,7 +94,8 @@ Exit
 - Tidy code and comment it
 
 ### Problems:
-
-- ```setpath \bin``` fails (waiting for Andrew's response)
-  - ```!! 5``` works but shouldn't (incorrect parameters)
-  - ```!-7 gh``` works but shouldn't (incorrect paramters)
+- ```!! 5``` works but shouldn't (incorrect parameters)
+- ```!-7 gh``` works but shouldn't (incorrect paramters)
+- **Garbage in the .alias file breaks causes seg fault -- IMPORTANT**
+- ```alias show ls``` gets executed
+- ```history kdsjdksdh``` - works (shouldn't) whole command added to history
