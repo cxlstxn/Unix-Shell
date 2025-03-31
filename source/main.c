@@ -50,11 +50,10 @@ int main() {
     }
     if (strchr(userinput, '\n') == NULL) { // input exceeds buffer size
         printf("Error: Input exceeds 512 characters. Please try again.\n");
-        while (getchar() != '\n'); // clear the rest of the input
+        while (getchar() != '\n'); // clearing input buffer
         continue;
     }
-    str_trim(userinput);
-
+    str_trim(userinput); // trim whitespace and newlines
 
     // for printing the command prompt upon empty input
     if(userinput[0] == '\n'){
@@ -71,8 +70,7 @@ int main() {
       *newline = '\0'; // replacing newline from fgets() with null
     }
 
-
-
+    //tokenize the user input:
 
     char* tokenList[100];
     int token_count = 0;
@@ -104,7 +102,7 @@ int main() {
     }
     tokenList[token_count] = NULL; // Ensure tokenList is properly terminated
 
-
+    // check if the first token is a history command
     if(tokenList[0][0] == '!' ){
       char* historyCommand = invoke_history(tokenList);
       if (strcmp(historyCommand, "\n") == 0) {
@@ -134,15 +132,14 @@ int main() {
         printf("Error: Invalid history command\n");
         continue;
       }
-      //break;
     }else{
-    // Add user input to history:
+      // check if the first token is history command and has arguments
       if (strcmp(tokenList[0], "history") == 0 && tokenList[1] != NULL) {
         printf("Error: Too many arguments. Usage: history\n");
         continue;
       }
-
-     add_to_history(originalinput);
+      // Add user input to history:
+      add_to_history(originalinput);
     }
 
     
@@ -163,6 +160,8 @@ int main() {
       break;
     }
 
+    // simple wipe command to clear history and aliases
+
     else if (strcmp(tokenList[0], "wipe") == 0){
       if (tokenList[1] == NULL) {
         clearHistory();
@@ -176,6 +175,8 @@ int main() {
       }
     }
 
+    // creating and printing aliases
+
     else if (strcmp(tokenList[0], "alias") == 0){
       if (tokenList[1] == NULL) {
         printAlias();
@@ -183,6 +184,8 @@ int main() {
         createAlias(tokenList);
       }
     }
+
+    // removing aliases
     
     else if (strcmp(tokenList[0], "unalias") == 0) {
       if (tokenList[1] == NULL) {
@@ -231,7 +234,5 @@ int main() {
     else{
       externalcommand(tokenList);
     }
-
-
   }
 }

@@ -26,8 +26,6 @@ char** processAlias(char** tokenList);
 void add_to_history(char*command);
 void print_history();
 char* invoke_history(char* tokenList[]);
-
-
 void add_to_history(char*command);
 void print_history();
 void saveHistory();
