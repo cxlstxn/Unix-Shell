@@ -44,7 +44,15 @@ int main() {
 
 
     /* READ AND PARSE USER INPUT: */
-    fgets(userinput, sizeof(userinput), stdin); // getting user input
+    if (fgets(userinput, sizeof(userinput), stdin) == NULL) { // getting user input
+        printf("Error reading input\n");
+        continue;
+    }
+    if (strchr(userinput, '\n') == NULL) { // input exceeds buffer size
+        printf("Error: Input exceeds 512 characters. Please try again.\n");
+        while (getchar() != '\n'); // clear the rest of the input
+        continue;
+    }
     str_trim(userinput);
 
 
@@ -62,6 +70,8 @@ int main() {
     if (newline){
       *newline = '\0'; // replacing newline from fgets() with null
     }
+
+
 
 
     char* tokenList[100];
@@ -85,8 +95,18 @@ int main() {
     // invoking and retokenizing the alias command:
 
 
+    char** processedTokenList = processAlias(tokenList); // process the alias command
+    if (strcmp(processedTokenList[0], "\0") == 0) {
+      continue; // Skip if no alias found
+    }
+    for (int i = 0; processedTokenList[i] != NULL; i++) {
+        tokenList[i] = processedTokenList[i];
+    }
+    tokenList[token_count] = NULL; // Ensure tokenList is properly terminated
+
+
     if(tokenList[0][0] == '!' ){
-      char* historyCommand = invoke_history(tokenList[0]);
+      char* historyCommand = invoke_history(tokenList);
       if (strcmp(historyCommand, "\n") == 0) {
         continue;
       }
@@ -102,50 +122,29 @@ int main() {
           token = strtok(NULL, " < \t | > & ;");
         }
         tokenList[token_count++] = NULL;    
+        processedTokenList = processAlias(tokenList); // process the alias command
+        if (strcmp(processedTokenList[0], "\0") == 0) {
+          continue; // Skip if no alias found
+        }
+        for (int i = 0; processedTokenList[i] != NULL; i++) {
+          tokenList[i] = processedTokenList[i];
+        }
+        
       } else {
         printf("Error: Invalid history command\n");
         continue;
       }
       //break;
     }else{
-     //Add user input to history:
-      char commandString[512] = "";
-      for (int i = 0; tokenList[i] != NULL; i++) {
-        strcat(commandString, tokenList[i]);
-        if (tokenList[i + 1] != NULL) {
-          strcat(commandString, " ");
-        }
-      }
-      add_to_history(commandString);
-    }
-
-    char* temp = invokeAlias(tokenList);
-
-    if (temp != NULL) {
-      if (strcmp(temp, "") == 0) {
+    // Add user input to history:
+      if (strcmp(tokenList[0], "history") == 0 && tokenList[1] != NULL) {
+        printf("Error: Too many arguments. Usage: history\n");
         continue;
       }
 
-      char appendedCommand[512];
-      strcpy(appendedCommand, temp);
-
-      for (int i = 1; tokenList[i] != NULL; i++) {
-        strcat(appendedCommand, " ");
-        strcat(appendedCommand, tokenList[i]);
-      }
-      temp = strdup(appendedCommand); 
-      token_count = 0;
-      token = strtok(temp, " < \t | > & ;");
-      while (token != NULL) {
-      char *newline = strchr(token, '\n');
-      if (newline) {
-        *newline = '\0';
-      }
-      tokenList[token_count++] = token;
-      token = strtok(NULL, " < \t | > & ;");
-      }
-      tokenList[token_count++] = NULL;
+     add_to_history(originalinput);
     }
+
     
     // To ensure we don't hit external commands with '\n'
     if (strcmp(tokenList[0], "\n") == 0) {
@@ -232,5 +231,7 @@ int main() {
     else{
       externalcommand(tokenList);
     }
+
+
   }
 }

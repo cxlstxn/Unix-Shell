@@ -54,9 +54,13 @@ void print_history(){
 
 
 // invoke_history: invokes a command from the history
-char* invoke_history(char* userinput){
-
+char* invoke_history(char** tokenList) {
+  char* userinput = tokenList[0]; // get the command from the tokenList
   // if userinput is !! return the last command
+  if (tokenList[1] != NULL) {
+    printf("Error: Too many arguments. Usage !! or !<number>\n");
+    return "\n";
+  }
   if(strcmp(userinput, "!!") == 0){
     if(history_count == 0){
       printf("Error: No commands in history\n");
@@ -64,6 +68,7 @@ char* invoke_history(char* userinput){
     }
     return history_array[0]; // Most recent command is at index 0
   }
+
 
   // if userinput is a history command:
   int command_index = atoi(&userinput[1]); // convert string to int
@@ -264,17 +269,17 @@ void printAlias(){
 
 
 char* invokeAlias(char* tokenList[]) {
-  static int recursion_depth = 0;
+  static int recursion = 0; // static so when we recurse it doesn't reset
 
   for (int i = 0; i < 10; i++) {
-    if (alias_name[i] != NULL && strcmp(alias_name[i], tokenList[0]) == 0) {
-      if (recursion_depth >= 3) {
+    if (alias_name[i] != NULL && strcmp(alias_name[i], tokenList[0]) == 0) { // checks if alias exists
+      if (recursion >= 3) {
         printf("Error: Alias recursion limit exceeded\n");
         return "\0";
       }
 
-      recursion_depth++;
-      char* cmmd = strdup(alias_command[i]); // Duplicate to avoid modifying the original alias_command
+      recursion++;
+      char* cmmd = strdup(alias_command[i]); 
       char* tokenized_command[512];
       int j = 0;
 
@@ -288,29 +293,26 @@ char* invokeAlias(char* tokenList[]) {
 
       // Check if the alias is a history invocation
       if (strcmp(tokenized_command[0], "!!") == 0 || (tokenized_command[0][0] == '!' && strlen(tokenized_command[0]) > 1)) {
-        char* history_command = invoke_history(tokenized_command[0]);
+        char* history_command = invoke_history(tokenized_command);
         if (strcmp(history_command, "\n") != 0) {
           // Tokenize
           char* history_tokenized_command[512];
           int k = 0;
           char* token = strtok(history_command, " ");
           while (token != NULL) {
-        history_tokenized_command[k++] = token;
-        token = strtok(NULL, " ");
+            history_tokenized_command[k++] = token;
+            token = strtok(NULL, " ");
           }
           history_tokenized_command[k] = NULL;
 
           char* recursive_result = invokeAlias(history_tokenized_command);
-          recursion_depth--;
-          free(cmmd);
+          recursion--; // take one off the recursion depth as we are returning one level up
           return recursive_result != NULL ? recursive_result : history_command;
         }
       }
-
       // Recursively go through aliases
       char* recursive_result = invokeAlias(tokenized_command);
-      recursion_depth--;
-      free(cmmd);
+      recursion--;
       return recursive_result != NULL ? recursive_result : alias_command[i];
     }
   }
@@ -387,4 +389,34 @@ void clearHistory(){
   if (access(".hist_list", F_OK) == 0) {
     remove(".hist_list");
   }
+}
+
+char** processAlias(char** tokenList) {
+  char* temp = invokeAlias(tokenList);
+  if (temp != NULL) {
+    if (strcmp(temp, "") == 0) {
+      return tokenList;
+    }
+
+      char appendedCommand[512];
+      strcpy(appendedCommand, temp);
+
+      for (int i = 1; tokenList[i] != NULL; i++) {
+        strcat(appendedCommand, " ");
+        strcat(appendedCommand, tokenList[i]);
+      }
+      temp = strdup(appendedCommand); 
+    int token_count = 0;
+    char* token = strtok(temp, " < \t | > & ;");
+    while (token != NULL) {
+      char* newline = strchr(token, '\n');
+      if (newline) {
+        *newline = '\0';
+      }
+      tokenList[token_count++] = token;
+      token = strtok(NULL, " < \t | > & ;");
+    }
+    tokenList[token_count] = NULL;
+  }
+  return tokenList;
 }

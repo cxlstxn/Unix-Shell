@@ -89,12 +89,4 @@ Exit
 
 
 ### To-do:
-- Fix all problems for **Monday night** at the latest
-- When input is > 511 anything after is treated as a new command, this should not happen and should print an error instead.
 - Tidy code and comment it
-
-### Problems:
-- ```!! 5``` works but shouldn't (incorrect parameters)
-- ```!-7 gh``` works but shouldn't (incorrect paramters)
-- **Garbage in the .alias file breaks causes seg fault -- IMPORTANT**
-- ```history kdsjdksdh``` - works (shouldn't) whole command added to history
