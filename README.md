@@ -1,6 +1,4 @@
-# CS210 - Computer Systems and Architecture - Simple Shell Practical 
-## Authors: Finlay Colston, Fraser Watt, Alex Boyd, Ross Paton, Jacob Mwangu
-
+ Computer Systems and Architecture - Simple Shell  
 
 ## Stage Summary:
 
